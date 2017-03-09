@@ -1,0 +1,34 @@
+{
+  "name": "dcharts2.0",
+  "version": "1.0.0",
+  "description": "dcharts is build by d3.js",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itdavidhan/dcharts2.0.git"
+  },
+  "keywords": [
+    "dcharts",
+    "d3"
+  ],
+  "author": "davidhan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itdavidhan/dcharts2.0/issues"
+  },
+  "homepage": "https://github.com/itdavidhan/dcharts2.0#readme",
+  "devDependencies": {
+    "crossfilter": "^1.3.12",
+    "d3": "^3.5.17",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-jscs": "^4.0.0",
+    "gulp-uglify": "^2.1.0"
+  }
+}
