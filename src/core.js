@@ -241,3 +241,42 @@ dcharts.group.renderDots = function(svg) {
        .attr("cy", function(d) { return y(d.y); })
        .attr("r", 4.5);
 };
+
+// 生成条/柱
+dcharts.group.renderBar = function(ops) {
+    var data = ops.getData();
+    console.log(data);
+    var padding = Math.floor(ops.quadrantWidth() / data.length)*0.2;
+    var bar = ops._bodyG.selectAll("rect.bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar");
+
+    ops._bodyG.selectAll("rect.bar")
+            .data(data)
+            .transition()
+            // .style("fill", function(d, i) {
+            //   if(typeof options.color !== 'undefined' && options.color.length > 0)
+            //   {
+            //     return _colors[i];
+            //   }else{
+            //     return dcharts.default._COLOR(i);
+            //   }
+            // })
+            .attr("x", function (d, i) {
+                var _resultX = d instanceof Array ? d[0] : i+1;
+                return ops.getX()(_resultX) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
+            })
+            .attr("y", function (d) {
+                var _resultY = d instanceof Array ? d[1] : d;
+                return ops.getY()(_resultY);
+            })
+            .attr("height", function (d) {
+                var _result = d instanceof Array ? d[1] : d;
+                return ops.yStart() - ops.getY(_result);
+            })
+            .attr("width", function(d){
+                return Math.floor(ops.quadrantWidth() / data.length) - padding;
+            });
+};

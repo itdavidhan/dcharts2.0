@@ -10,8 +10,6 @@ dcharts.areaChart = function(selector, options) {
     // 处理数据
     var ops = dcharts.group.options(selector, options);
 
-    console.log(ops.getWidth());
-
     // 生成svg
     dcharts.group.renderSvg(ops);
 
@@ -22,7 +20,10 @@ dcharts.areaChart = function(selector, options) {
     dcharts.group.renderAxes(ops);
 
     // 生成线
-    dcharts.group.renderLine(ops);
+    // dcharts.group.renderLine(ops);
+
+    // 生成条
+    dcharts.group.renderBar(ops);
 
 
 };
