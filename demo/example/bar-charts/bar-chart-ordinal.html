@@ -9,7 +9,7 @@
     *{padding: 0; margin: 0;}
     div{margin: 10px;}
     .div1{width: 30%; height: 300px; border: 1px solid #DDD;}
-    .div2{width: 20%; height: 100px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
   </style>
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
@@ -24,16 +24,16 @@
           {'key': '山羊', 'value': 8},
           {'key': '狗', 'value': 3}
         ],
-        margin: {top: 30, right: 30, bottom: 30, left: 30},
+        margin: {top: 30, right: 30, bottom: 60, left: 60},
         ticks: 2,
         // showLineX: true,
         showLineY: true,
+        axisTextX: '动物',
+        axisTextY: '数目',
         formatX: '',
         formatY: '$'
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
-    };
-
-    console.log(dcharts);
+     };
 
       dcharts.barChart('.div1', ops);
       dcharts.barChart('.div2', ops);
@@ -54,7 +54,7 @@
 
   <script type="text/javascript" src="../../js/d3.js"></script>
   <script type="text/javascript" src="../../js/crossfilter.js"></script>
-  <script type="text/javascript" src="../../js/dcharts.js">
+  <script type="text/javascript" src="../../js/dcharts.js"></script>
 
 </body>
 </html>

@@ -11,6 +11,8 @@
 * showText: <boolean> example: true
 * showAxisX: <boolean> example: true
 * showAxisY: <boolean> example: true
+* axisTextX: <string> example: 'x轴'
+* axisTextY: <string> example: 'y轴'
 * color: <array> example: ['yellow', 'red', 'orange', 'blue', 'green']
 *
 */
@@ -48,7 +50,7 @@ dcharts.barChart = function(selector, options) {
         else if(_scale == 'ordinal') {
             return d3.scale.ordinal().domain(_data.map(function(d) {
                 return d[0];
-            })).rangePoints([0, _width - _margins.left*2], 1);
+            })).rangePoints([0, _width - _margins.left - _margins.right], 1);
         }
     })();
     var _y = d3.scale.linear().domain([0, _valMax]).range([quadrantHeight(), 0]);
@@ -61,6 +63,8 @@ dcharts.barChart = function(selector, options) {
     var _formatY = options.formatY || false;
     var _showAxisX = (typeof options.showAxisX != 'undefined') ? options.showAxisX : true;
     var _showAxisY = (typeof options.showAxisY != 'undefined') ? options.showAxisY : true;
+    var _axisTextX = options.axisTextX || '';
+    var _axisTextY = options.axisTextY || '';
     var _svg;
     var _bodyG;
 
@@ -119,7 +123,12 @@ dcharts.barChart = function(selector, options) {
                     .attr("transform", function () {
                         return "translate(" + xStart() + "," + yStart() + ")";
                     })
-                    .call(xAxis);
+                    .call(xAxis)
+                    .append("text")
+                    .attr("x", (xEnd() - xStart()))
+                    .attr("dy", 40)
+                    .style("text-anchor", "end")
+                    .text(_axisTextX);
         }
         // 是否显示y轴
         if(_showAxisY)
@@ -129,17 +138,14 @@ dcharts.barChart = function(selector, options) {
                     .attr("transform", function () {
                         return "translate(" + xStart() + "," + yEnd() + ")";
                     })
-                    .call(yAxis);
+                    .call(yAxis)
+                    .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 6)
+                    .attr("dy", "-40px")
+                    .style("text-anchor", "end")
+                    .text(_axisTextY);
         }
-        // axesG.append("g")
-        //    .attr("class", "y axis")
-        //    .call(yAxis)
-        //    .append("text")
-        //    .attr("transform", "rotate(-90)")
-        //    .attr("y", 6)
-        //    .attr("dy", ".71em")
-        //    .style("text-anchor", "end")
-        //    .text("Frequency");
 
         if(_showLineX)
         {

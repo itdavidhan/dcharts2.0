@@ -8,6 +8,8 @@
 * ticks: <number> example: 5
 * showLineX: <boolean> example: false
 * showLineY: <boolean> example: true
+* axisTextX: <string> example: 'x轴'
+* axisTextY: <string> example: 'y轴'
 * interpolate: <string> example: 'linear','cardinal','step'
 * tension: <number> example: 0~1之间
 * color: <array> example: ['yellow', 'red', 'orange', 'blue', 'green']
@@ -82,6 +84,8 @@ dcharts.lineChart = function(selector, options) {
     var _tension = options.tension || 0.7;
     var _showLineX = options.showLineX || false;
     var _showLineY = options.showLineY || false;
+    var _axisTextX = options.axisTextX || '';
+    var _axisTextY = options.axisTextY || '';
     var _showDot = options.showDot;
     var _color = options.color;
     var _svg;
@@ -128,7 +132,12 @@ dcharts.lineChart = function(selector, options) {
                 .attr("transform", function () {
                     return "translate(" + xStart() + "," + yStart() + ")";
                 })
-                .call(xAxis);
+                .call(xAxis)
+                .append("text")
+                .attr("x", (xEnd() - xStart()))
+                .attr("dy", 40)
+                .style("text-anchor", "end")
+                .text(_axisTextX);
 
         if(_showLineX) showLineX();
         function showLineX() {
@@ -153,7 +162,13 @@ dcharts.lineChart = function(selector, options) {
                 .attr("transform", function () {
                     return "translate(" + xStart() + "," + yEnd() + ")";
                 })
-                .call(yAxis);
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", "-40px")
+                .style("text-anchor", "end")
+                .text(_axisTextY);
 
          if(_showLineY) showLineY();
          function showLineY() {
