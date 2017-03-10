@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>line chart</title>
+  <style media="screen">
+    *{padding: 0; margin: 0;}
+    div{margin: 10px;}
+    .div1{width: 80%; height: 500px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
+  </style>
+  <link rel="stylesheet" href="../../css/d3.css">
+  <script type="text/javascript">
+    window.onload = function() {
+      var ops1 = {
+        scale: 'linear',
+        data: [
+          [
+            {key: 0, value: 13},
+            {key: 1, value: 12},
+            {key: 2, value: 14},
+            {key: 3, value: 22},
+            {key: 4, value: 6}
+          ],
+          [
+            {key: 0, value: 16},
+            {key: 1, value: 13},
+            {key: 2, value: 55},
+            {key: 3, value: 16},
+            {key: 4, value: 8}
+          ],
+          [
+            {key: 0, value: 22},
+            {key: 1, value: 13},
+            {key: 2, value: 30},
+            {key: 3, value: 20},
+            {key: 4, value: 10}
+          ]
+        ],
+        margin: {top: 20, right: 20, bottom: 20, left: 100},
+        ticks: 5,
+        // showLineX: false,
+        showLineY: true,
+        showDot: true,
+        tension: 0.5,
+        // color: ['yellow', 'red', 'orange', 'blue', 'green']
+      };
+      var ops2 = {
+        scale: 'linear',
+        data: [
+          [
+              {a: '2', b: 135},
+              {a: '3', b: 162},
+              {a: '4', b: 144},
+              {a: '5', b: 212},
+              {a: '6', b: 116}
+          ],
+          [
+              {a: '2', b: 141},
+              {a: '3', b: 171},
+              {a: '4', b: 202},
+              {a: '5', b: 514},
+              {a: '6', b: 312},
+              {a: '7', b: 156}
+          ]
+
+        ],
+        margin: {top: 20, right: 20, bottom: 20, left: 100},
+        ticks: 5,
+        showLineX: true,
+        showLineY: true,
+        // showDot: true,
+        interpolate: 'step',
+        tension: 0.5,
+        // color: ['yellow', 'red', 'orange', 'blue', 'green']
+      };
+
+      dcharts.lineChart('.div1', ops1);
+      dcharts.lineChart('.div2', ops2);
+
+      window.onresize = function() {
+          dcharts.lineChart('.div1', ops1);
+          dcharts.lineChart('.div2', ops2);
+      };
+    };
+  </script>
+</head>
+<body>
+  <div class="div1"></div>
+  <div class="div2"></div>
+
+
+
+  <script type="text/javascript" src="../../js/d3.js"></script>
+  <script type="text/javascript" src="../../js/crossfilter.js"></script>
+  <script type="text/javascript" src="../../js/dcharts.js">
+</body>
+</html>

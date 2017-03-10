@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bar chart linear</title>
+  <style media="screen">
+    *{padding: 0; margin: 0;}
+    div{margin: 10px;}
+    .div1{width: 20%; height: 200px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
+  </style>
+  <link rel="stylesheet" href="../../css/d3.css">
+  <script type="text/javascript">
+    window.onload = function() {
+      var ops1 = {
+        scale: 'linear',
+        data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
+        margin: {top: 20, right: 20, bottom: 20, left: 30},
+        // ticks: '5',
+        showLineX: false,
+        showLineY: true,
+        showAxisX: false,
+        // showAxisY: false,
+        // showText: true
+        // color: ['yellow', 'red', 'orange', 'blue', 'green']
+    };
+
+    var ops2 = {
+      scale: 'linear',
+      data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
+      margin: {top: 20, right: 20, bottom: 20, left: 30},
+      // ticks: '5',
+      showLineX: false,
+      showLineY: true,
+    //   showAxisX: false,
+      // showAxisY: false,
+      showText: true
+      // color: ['yellow', 'red', 'orange', 'blue', 'green']
+    }
+
+      dcharts.barChart('.div1', ops1);
+      dcharts.barChart('.div2', ops2);
+
+      window.onresize = function() {
+          dcharts.barChart('.div1', ops1);
+          dcharts.barChart('.div2', ops2);
+      };
+    };
+  </script>
+</head>
+<body>
+  <div class="div1"></div>
+  <div class="div2"></div>
+
+
+
+  <script type="text/javascript" src="../../js/d3.js"></script>
+  <script type="text/javascript" src="../../js/crossfilter.js"></script>
+  <script type="text/javascript" src="../../js/dcharts.js">
+
+  </script>
+</body>
+</html>
