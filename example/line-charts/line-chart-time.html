@@ -14,10 +14,8 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
-      var dc1 = Dcharts('.div1');
-      var dc2 = Dcharts('.div2');
       var ops1 = {
-        // scale: 'time',
+        scale: 'time',
         data: [
           [
             {key: new Date(2001, 0, 1).getTime(), value: 0},
@@ -36,45 +34,46 @@
         ],
         margin: {top: 20, right: 20, bottom: 20, left: 100},
         ticks: 5,
-        // showLineX: false,
+        showLineX: true,
         showLineY: true,
         showDot: true,
         tension: 0.5,
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       };
       var ops2 = {
-        // scale: 'linear',
+        scale: 'linear',
         data: [
           [
-            {key: 'a', value: 0},
-            {key: 'b', value: 12},
-            {key: 'c', value: 4},
-            {key: 'd', value: 22},
-            {key: 'e', value: 6}
+            {key: '0', value: 0},
+            {key: '1', value: 12},
+            {key: '2', value: 4},
+            {key: '3', value: 22},
+            {key: '4', value: 6}
           ],
           [
-            {key: 'a', value: 12},
-            {key: 'b', value: 132},
-            {key: 'c', value: 24},
-            {key: 'd', value: 32},
-            {key: 'e', value: 16}
+            {key: '0', value: 12},
+            {key: '1', value: 132},
+            {key: '2', value: 24},
+            {key: '3', value: 32},
+            {key: '4', value: 16}
           ]
 
         ],
         margin: {top: 20, right: 20, bottom: 20, left: 100},
-        ticks: 5,
+        ticks: 3,
         // showLineX: false,
         showLineY: true,
         showDot: true,
         tension: 0.5,
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       };
-      dc1.createLineChart(ops1);
-      // dc2.createLineChart(ops2);
+
+      dcharts.lineChart('.div1', ops1);
+      dcharts.lineChart('.div2', ops2);
 
       window.onresize = function() {
-        dc1.createLineChart(ops1);
-        // dc2.createLineChart(ops2);
+          dcharts.lineChart('.div1', ops1);
+          dcharts.lineChart('.div2', ops2);
       };
     };
   </script>
@@ -86,6 +85,7 @@
 
 
   <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+  <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
   <script type="text/javascript" src="../../lib/dcharts.js"></script>
 </body>
 </html>

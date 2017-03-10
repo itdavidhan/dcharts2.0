@@ -14,10 +14,8 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
-      var dc1 = Dcharts('.div1');
-      var dc2 = Dcharts('.div2');
       var ops1 = {
-        // scale: 'linear',
+        scale: 'linear',
         data: [
           [
             {key: 0, value: 13},
@@ -50,38 +48,41 @@
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       };
       var ops2 = {
-        // scale: 'linear',
+        scale: 'linear',
         data: [
           [
-            {a: '2', b: 115},
-            {a: '3', b: 112},
-            {a: '4', b: 114},
-            {a: '5', b: 212},
-            {a: '6', b: 116}
+              {a: '2', b: 135},
+              {a: '3', b: 162},
+              {a: '4', b: 144},
+              {a: '5', b: 212},
+              {a: '6', b: 116}
           ],
           [
-            {a: '3', b: 121},
-            {a: '4', b: 132},
-            {a: '5', b: 214},
-            {a: '6', b: 312},
-            {a: '7', b: 116}
+              {a: '2', b: 141},
+              {a: '3', b: 171},
+              {a: '4', b: 202},
+              {a: '5', b: 514},
+              {a: '6', b: 312},
+              {a: '7', b: 156}
           ]
 
         ],
         margin: {top: 20, right: 20, bottom: 20, left: 100},
         ticks: 5,
-        // showLineX: false,
+        showLineX: true,
         showLineY: true,
-        showDot: true,
+        // showDot: true,
+        interpolate: 'step',
         tension: 0.5,
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       };
-      dc1.createLineChart(ops1);
-      dc2.createLineChart(ops2);
+
+      dcharts.lineChart('.div1', ops1);
+      dcharts.lineChart('.div2', ops2);
 
       window.onresize = function() {
-        dc1.createLineChart(ops1);
-        dc2.createLineChart(ops2);
+          dcharts.lineChart('.div1', ops1);
+          dcharts.lineChart('.div2', ops2);
       };
     };
   </script>
@@ -93,6 +94,7 @@
 
 
   <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+  <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
   <script type="text/javascript" src="../../lib/dcharts.js"></script>
 </body>
 </html>

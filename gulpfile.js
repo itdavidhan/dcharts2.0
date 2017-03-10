@@ -19,10 +19,21 @@ gulp.task('dcct', function() {
         path + 'utils.js',
         path + 'filter.js',
         path + 'bar-chart.js',
+        path + 'line-chart.js',
+        path + 'pie-chart.js',
+        path + 'tooltip.js',
+        path + 'flicker.js',
         path + 'end.js' // NOTE: keep this last
     ])
     .pipe(concat('dcharts.js'))
     .pipe(gulp.dest('./lib'));
+});
+
+// dcharts.js 压缩
+gulp.task('uglify', function() {
+    gulp.src('./lib/dcharts.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('./lib/min'));
 });
 
 // 监控

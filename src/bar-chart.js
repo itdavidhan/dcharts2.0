@@ -1,3 +1,19 @@
+/*
+* 创建柱状图 - bar chart
+* @param: {Object} options
+* options参数配置（带★为必选）
+* ★ scale: <string> example: 'linear' or 'ordinal'
+* ★ data: <array> example: [1, 4, 12] or [{'key': 'a', 'value': 1}, {'key': 'b', 'value': 2}]
+* margin: <json> example: {top: 20, right: 20, bottom: 20, left: 20}
+* ticks: <number> example: 5
+* showLineX: <boolean> example: false
+* showLineY: <boolean> example: true
+* showText: <boolean> example: true
+* showAxisX: <boolean> example: true
+* showAxisY: <boolean> example: true
+* color: <array> example: ['yellow', 'red', 'orange', 'blue', 'green']
+*
+*/
 
 dcharts.barChart = function(selector, options) {
     var _selector = d3.select(selector);
@@ -20,7 +36,7 @@ dcharts.barChart = function(selector, options) {
         }
         else if(_scale == 'ordinal')
         {
-            return dcharts.util.dfc.maxInArrs(_data)[1];
+            return dcharts.filter.maxInArrs(_data)[1];
         }
     })();
     var _margins = options.margin || dcharts.default._MARGIN;
@@ -37,15 +53,24 @@ dcharts.barChart = function(selector, options) {
     })();
     var _y = d3.scale.linear().domain([0, _valMax]).range([quadrantHeight(), 0]);
     var _colors = options.color;
-    var _ticks = options.ticks;
+    var _ticks = options.ticks || 5;
     var _showLineX = options.showLineX || false;
     var _showLineY = options.showLineY || false;
+    var _showText = options.showText || false;
     var _formatX = options.formatX || false;
     var _formatY = options.formatY || false;
+    var _showAxisX = (typeof options.showAxisX != 'undefined') ? options.showAxisX : true;
+    var _showAxisY = (typeof options.showAxisY != 'undefined') ? options.showAxisY : true;
     var _svg;
     var _bodyG;
 
     _selector.html('');
+
+    _selector.on('mouseleave', function() {
+        dcharts.tooltip.hideTooltip(_selector);
+    });
+
+    dcharts.tooltip.initTooltip(_selector);
 
     render();
     function render() {
@@ -86,20 +111,26 @@ dcharts.barChart = function(selector, options) {
           });
         }
 
-        axesG.append("g")
-                .attr("class", "x-axis")
-                .attr("transform", function () {
-                    return "translate(" + xStart() + "," + yStart() + ")";
-                })
-                .call(xAxis);
-
-        axesG.append("g")
-                .attr("class", "y-axis")
-                .attr("transform", function () {
-                    return "translate(" + xStart() + "," + yEnd() + ")";
-                })
-                .call(yAxis);
-
+        // 是否显示x轴
+        if(_showAxisX)
+        {
+            axesG.append("g")
+                    .attr("class", "x-axis")
+                    .attr("transform", function () {
+                        return "translate(" + xStart() + "," + yStart() + ")";
+                    })
+                    .call(xAxis);
+        }
+        // 是否显示y轴
+        if(_showAxisY)
+        {
+            axesG.append("g")
+                    .attr("class", "y-axis")
+                    .attr("transform", function () {
+                        return "translate(" + xStart() + "," + yEnd() + ")";
+                    })
+                    .call(yAxis);
+        }
         // axesG.append("g")
         //    .attr("class", "y axis")
         //    .call(yAxis)
@@ -194,39 +225,44 @@ dcharts.barChart = function(selector, options) {
                 });
 
         bar.on('mouseenter', function(d) {
-        //   _this.tooltip._showTooltip(d, _selector);
-          d3.select(this).transition().style('opacity', '0.8');
+            dcharts.tooltip.showTooltip(d, _selector);
+            d3.select(this).transition().style('opacity', '0.8');
         })
         .on('mousemove', function() {
-          var x = d3.event.pageX;
-          var y = d3.event.pageY;
-        //   _this.tooltip._moveTooltip(_selector, x, y);
+            var x = d3.event.pageX;
+            var y = d3.event.pageY;
+            dcharts.tooltip.moveTooltip(_selector, x, y);
         })
         .on('mouseleave', function() {
           d3.select(this).transition().style('opacity', '1');
         });
 
-        _bodyG.selectAll("text.text")
-                .data(_data)
-                .enter()
-                .append("text")
-                .attr("class", "text")
-                .attr("x", function (d, i) {
-                    var _resultX = d instanceof Array ? d[0] : i+1;
-                    return _x(_resultX);
-                })
-                .attr("y", function (d) {
-                    var _resultY = d instanceof Array ? d[1] : d;
-                    return _y(_resultY) + 16; // 16:距离柱形图顶部的距离，根据情况而定
-                })
-                .style({
-                  "fill": "#FFF",
-                  "font-size": "12px"
-                })
-                .attr("text-anchor", "middle")
-                .text(function(d) {
-                  return d instanceof Array ? d[1] : d;
-                });
+        if(_showText) showText();
+
+        function showText() {
+            _bodyG.selectAll("text.text")
+                    .data(_data)
+                    .enter()
+                    .append("text")
+                    .attr("class", "text")
+                    .attr("x", function (d, i) {
+                        var _resultX = d instanceof Array ? d[0] : i+1;
+                        return _x(_resultX);
+                    })
+                    .attr("y", function (d) {
+                        var _resultY = d instanceof Array ? d[1] : d;
+                        return _y(_resultY) + 16; // 16:距离柱形图顶部的距离，根据情况而定
+                    })
+                    .style({
+                      "fill": "#FFF",
+                      "font-size": "12px"
+                    })
+                    .attr("text-anchor", "middle")
+                    .text(function(d) {
+                      return d instanceof Array ? d[1] : d;
+                    });
+        }
+
     }
     function xStart() {
         return _margins.left;
