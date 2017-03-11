@@ -1,12 +1,5 @@
-/*
-* 创建面积图 - area chart
-*
-*
-*
-*
-*
-*/
-dcharts.areaChart = function(selector, options) {
+
+dcharts.lineChart2 = function(selector, options) {
     // 处理数据
     var ops = dcharts.group.options(selector, options);
 
@@ -21,12 +14,4 @@ dcharts.areaChart = function(selector, options) {
 
     // 生成线
     dcharts.group.renderLine(ops);
-
-    // 生成点
-    // dcharts.group.renderDots(ops);
-
-    // 生成块
-    dcharts.group.renderArea(ops);
-
-
 };

@@ -51,21 +51,26 @@
         scale: 'linear',
         data: [
           [
-              {a: '2', b: 135},
-              {a: '3', b: 162},
-              {a: '4', b: 144},
-              {a: '5', b: 212},
-              {a: '6', b: 116}
+            {key: 0, value: 13},
+            {key: 1, value: 12},
+            {key: 2, value: 14},
+            {key: 3, value: 22},
+            {key: 4, value: 6}
           ],
           [
-              {a: '2', b: 141},
-              {a: '3', b: 171},
-              {a: '4', b: 202},
-              {a: '5', b: 514},
-              {a: '6', b: 312},
-              {a: '7', b: 156}
+            {key: 0, value: 16},
+            {key: 1, value: 13},
+            {key: 2, value: 55},
+            {key: 3, value: 16},
+            {key: 4, value: 8}
+          ],
+          [
+            {key: 0, value: 22},
+            {key: 1, value: 13},
+            {key: 2, value: 30},
+            {key: 3, value: 20},
+            {key: 4, value: 10}
           ]
-
         ],
         margin: {top: 20, right: 20, bottom: 20, left: 100},
         ticks: 5,
@@ -77,13 +82,13 @@
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       };
 
-      dcharts.lineChart('.div1', ops1);
-      dcharts.lineChart('.div2', ops2);
+      dcharts.lineChart2('.div1', ops1);
+      dcharts.lineChart2('.div2', ops2);
 
-      window.onresize = function() {
-          dcharts.lineChart('.div1', ops1);
-          dcharts.lineChart('.div2', ops2);
-      };
+    //   window.onresize = function() {
+    //       dcharts.lineChart('.div1', ops1);
+    //       dcharts.lineChart('.div2', ops2);
+    //   };
     };
   </script>
 </head>

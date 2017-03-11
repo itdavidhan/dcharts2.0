@@ -70,14 +70,15 @@ dcharts.lineChart = function(selector, options) {
           return _len;
       })();
     var _margins = options.margin || dcharts.default._MARGIN;
-    var _x = (function() {
-        if(_scale == 'linear')
-        {
-            return d3.scale.linear().domain([_keyMin, _keyMax]);
-        }else if(_scale == 'time') {
-            return d3.time.scale().domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()]);
-        }
-    })();
+    // var _x = (function() {
+    //     if(_scale == 'linear')
+    //     {
+    //         return d3.scale.linear().domain([_keyMin, _keyMax]);
+    //     }else if(_scale == 'time') {
+    //         return d3.time.scale().domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()]);
+    //     }
+    // })();
+    var _x = d3.scale.linear().domain([_keyMin, _keyMax]);
     var _y = d3.scale.linear().domain([_valMin, _valMax + 10]);
     var _ticks = options.ticks;
     var _interpolate = options.interpolate || 'cardinal';
@@ -92,12 +93,14 @@ dcharts.lineChart = function(selector, options) {
     var _bodyG;
     var _line;
 
+
     _selector.html('');
     _selector.on('mouseleave', function(d) {
         dcharts.tooltip.hideTooltip(_selector);
     });
     dcharts.tooltip.initTooltip(_selector);
 
+    console.log('全局=', _x(1));
     render();
     function render() {
         if (!_svg) {
@@ -105,10 +108,14 @@ dcharts.lineChart = function(selector, options) {
                     .attr("height", _height)
                     .attr("width", _width);
 
+                    console.log('render=', _x(1));
             renderAxes(_svg);
 
-            defineBodyClip(_svg);
+
+
+            // defineBodyClip(_svg);
         }
+
 
         renderBody(_svg);
     };
@@ -116,8 +123,8 @@ dcharts.lineChart = function(selector, options) {
     function renderAxes(svg) {
         var axesG = svg.append("g")
                 .attr("class", "axes");
-
         renderXAxis(axesG);
+        console.log('创建坐标=', _x(1));
 
         renderYAxis(axesG);
     }
@@ -127,6 +134,7 @@ dcharts.lineChart = function(selector, options) {
                 .scale(_x.range([0, quadrantWidth()]))
                 .orient("bottom");
 
+                console.log('x轴=', _x(1));
         axesG.append("g")
                 .attr("class", "x-axis")
                 .attr("transform", function () {
@@ -204,6 +212,8 @@ dcharts.lineChart = function(selector, options) {
                         + yEnd() + ")")
                     .attr("clip-path", "url(#body-clip)");
 
+                    console.log('renderBody=', _x(1));
+
         renderLines();
 
         // 是否显示圆点
@@ -211,13 +221,14 @@ dcharts.lineChart = function(selector, options) {
     }
 
     function renderLines() {
+        var _x2 = d3.scale.linear().domain([_keyMin, _keyMax]);
+        console.log('renderLines', _x(1), _x2(1));
         _line = d3.svg.line()
                         .x(function (d) { return _x(d[0]); })
                         .y(function (d) { return _y(d[1]); });
 
         if(_interpolate) _line.interpolate(_interpolate);
         if(_tension) _line.tension(_tension);
-
         _bodyG.selectAll("path.line")
                 .data(_data)
                 .enter()

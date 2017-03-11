@@ -12,7 +12,6 @@ dcharts.group = {};
 
 // 处理数据
 dcharts.group.options = function(selector, options) {
-    // var _selector = d3.select(selector);
     var ops = {
         getSelector: function() {
             return d3.select(selector);
@@ -80,14 +79,18 @@ dcharts.group.options = function(selector, options) {
         getX: function() {
             if(this.getScale() == 'linear')
             {
-                // return d3.scale.linear().domain([0, 10]);
-                return d3.scale.linear().domain([this.getKeyMin(), this.getKeyMax()]);
+                return d3.scale.linear()
+                .domain([this.getKeyMin(), this.getKeyMax()])
+                .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'time') {
-                return d3.time.scale().domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()]);
+                return d3.time.scale()
+                .domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()])
+                .range([0, ops.quadrantWidth()]);
             }
         },
         getY: function() {
-            return d3.scale.linear().domain([this.getValMin(), this.getValMax()]);
+            return d3.scale.linear().domain([this.getValMin(), this.getValMax()])
+            .range([ops.quadrantHeight(), 0]);
         },
         getTicks: function() {
             return options.ticks;
@@ -163,11 +166,11 @@ dcharts.group.renderBody = function(ops) {
 // 生成坐标轴
 dcharts.group.renderAxes = function(ops) {
     var xAxis = d3.svg.axis()
-            .scale(ops.getX().range([0, ops.quadrantWidth()]))
+            .scale(ops.getX())
             .orient("bottom");
 
     var yAxis = d3.svg.axis()
-            .scale(ops.getY().range([ops.quadrantHeight(), 0]))
+            .scale(ops.getY())
             .orient("left");
 
     ops._svg.append("g")
@@ -189,21 +192,21 @@ dcharts.group.renderAxes = function(ops) {
 dcharts.group.renderLine = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
+    var _color = ops.getColor();
+    var _data = ops.getData();
 
-    var _line = d3.svg.line()
-            .x(function(d){ return _x(d[0]); })
-            .y(function(d){ return _y(d[1]); });
-
-    var data = ops.getData();
+    _line = d3.svg.line()
+            .x(function (d) { return _x(d[0]); })
+            .y(function (d) { return _y(d[1]); });
 
     ops._bodyG.selectAll("path.line")
-            .data(data)
+            .data(_data)
             .enter()
             .append("path")
             .style("stroke", function (d, i) {
-              if(typeof ops.getColor() != 'undefined' && ops.getColor().length > 0)
+              if(typeof _color != 'undefined' && _color.length > 0)
               {
-                return ops.getColor()[i];
+                return _color[i];
               }else{
                 return dcharts.default._COLOR(i);
               }
@@ -211,41 +214,63 @@ dcharts.group.renderLine = function(ops) {
             .attr("class", "line");
 
     ops._bodyG.selectAll("path.line")
-            .data(data)
+            .data(_data)
             .transition()
             .attr("d", function (d) { return _line(d); });
 };
 
 // 生成块
-dcharts.group.renderArea = function() {
-    var area = d3.svg.area()
-        .x(function(d) { return x(d[0]); })
-        .y0(y(0))
-        .y1(function(d) { return y(d[1]); });
+dcharts.group.renderArea = function(ops) {
+    var _x = ops.getX();
+    var _y = ops.getY();
+    var _color = ops.getColor();
+    var data = ops.getData();
 
-    svg.selectAll("path.area")
-            .data([data])
-        .enter()
+    var area = d3.svg.area()
+        .x(function(d) { return _x(d[0]); })
+        .y0(_y(0))
+        .y1(function(d) { return _y(d[1]); });
+
+    ops._bodyG.selectAll("path.area")
+            .data(data)
+            .enter()
             .append("path")
             .attr("class", "area")
             .attr("d", function(d){return area(d);});
 };
 
 // 生成圆点
-dcharts.group.renderDots = function(svg) {
-    svg.append("g").selectAll("circle")
-       .data(data)
-     .enter().append("circle")
-       .attr("class", "dot")
-       .attr("cx", function(d) { return x(d.x); })
-       .attr("cy", function(d) { return y(d.y); })
-       .attr("r", 4.5);
+dcharts.group.renderDots = function(ops) {
+    var _x = ops.getX();
+    var _y = ops.getY();
+    var data = ops.getData();
+
+    data.forEach(function (list, i) {
+       ops._bodyG.selectAll("circle._" + i)
+               .data(list)
+               .enter()
+               .append("circle")
+               .attr("class", "dot _" + i);
+
+       ops._bodyG.selectAll("circle._" + i)
+               .data(list)
+               .style("stroke", function (d) {
+                   return dcharts.default._COLOR(i);
+               })
+               .transition()
+               .attr("cx", function (d) { return _x(d[0]); })
+               .attr("cy", function (d) { return _y(d[1]); })
+               .attr("r", 4.5);
+    });
 };
 
 // 生成条/柱
 dcharts.group.renderBar = function(ops) {
+    var _x = ops.getX();
+    var _y = ops.getY();
+    var _color = ops.getColor();
     var data = ops.getData();
-    console.log(data);
+
     var padding = Math.floor(ops.quadrantWidth() / data.length)*0.2;
     var bar = ops._bodyG.selectAll("rect.bar")
             .data(data)
@@ -256,14 +281,14 @@ dcharts.group.renderBar = function(ops) {
     ops._bodyG.selectAll("rect.bar")
             .data(data)
             .transition()
-            // .style("fill", function(d, i) {
-            //   if(typeof options.color !== 'undefined' && options.color.length > 0)
-            //   {
-            //     return _colors[i];
-            //   }else{
-            //     return dcharts.default._COLOR(i);
-            //   }
-            // })
+            .style("fill", function(d, i) {
+              if(typeof _color !== 'undefined' && _color.length > 0)
+              {
+                return _color[i];
+              }else{
+                return dcharts.default._COLOR(i);
+              }
+            })
             .attr("x", function (d, i) {
                 var _resultX = d instanceof Array ? d[0] : i+1;
                 return ops.getX()(_resultX) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
