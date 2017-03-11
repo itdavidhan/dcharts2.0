@@ -19,6 +19,7 @@ gulp.task('dcct', function() {
         path + 'utils.js',
         path + 'filter.js',
         path + 'bar-chart.js',
+        path + 'bar-chart2.js',
         path + 'line-chart.js',
         path + 'line-chart2.js',
         path + 'area-chart.js',

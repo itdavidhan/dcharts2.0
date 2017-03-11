@@ -34,12 +34,54 @@ dcharts.group.options = function(selector, options) {
             return options.scale;
         },
         getData: function() {
-            var data = [];
-            options.data.map(function(a) {
-              _a = dcharts.utils.dfc.json2arr(a);
-              data.push(_a);
-            });
-            return data;
+            var initData = options.data;
+            // 数据为空
+            if(initData.length == 0 || !(initData instanceof Array))
+            {
+                console.error('数据为空，或者非数组');
+                return [[]];
+            }
+            // 数据嵌套
+            if(initData[0] instanceof Array)
+            {   // 数据嵌套数组
+                if(typeof initData[0][0] !== 'undefined')
+                {
+                    if(initData[0][0] instanceof Array && initData[0][0].length == 2)
+                    {
+                        return initData;
+                    }else if(initData[0][0] instanceof Object) {
+                        var data = [];
+                        initData.map(function(a) {
+                          _a = dcharts.utils.dfc.json2arr(a);
+                          data.push(_a);
+                        });
+                        return data;
+                    }else{
+                        console.error('数据格式错误');
+                        return [[]];
+                    }
+                }else if(initData[0].length == 2){
+                    return initData;
+                }else{
+                    console.error('数据格式错误');
+                    return [[]];
+                }
+            }
+            // 数据不嵌套
+            else if(initData[0] instanceof Object) {
+               var _data = dcharts.utils.dfc.json2arr(initData);
+               return [_data];
+           } else if(Number(initData[0])) {
+               var _arr = [];
+               initData.map(function(n, i) {
+                   var _a = [i, n];
+                   _arr.push(_a);
+               });
+               return [_arr];
+           }else{
+               console.error('数据格式错误');
+               return [[]];
+           }
         },
         getValMax: function() {
             var _max = -10000;
@@ -87,6 +129,12 @@ dcharts.group.options = function(selector, options) {
                 return d3.time.scale()
                 .domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()])
                 .range([0, ops.quadrantWidth()]);
+            }else if(this.getScale() == 'ordinal'){
+                var data = this.getData()[0];
+                return d3.scale.ordinal()
+                .domain(data.map(function(d) {
+                    return d[0];
+                })).rangePoints([0, this.getWidth() - this.getMargin().left - this.getMargin().right], 1);
             }
         },
         getY: function() {
@@ -387,6 +435,7 @@ dcharts.group.renderArea = function(ops) {
 dcharts.group.renderDots = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
+    var _color = ops.getColor();
     var data = ops.getData();
 
     data.forEach(function (list, i) {
@@ -399,7 +448,12 @@ dcharts.group.renderDots = function(ops) {
        ops._bodyG.selectAll("circle._" + i)
                .data(list)
                .style("stroke", function (d) {
-                   return dcharts.default._COLOR(i);
+                   if(typeof _color != 'undefined' && _color.length > 0)
+                   {
+                     return _color[i];
+                   }else{
+                     return dcharts.default._COLOR(i);
+                   }
                })
                .transition()
                .attr("cx", function (d) { return _x(d[0]); })
@@ -422,7 +476,7 @@ dcharts.group.renderBar = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData();
+    var data = ops.getData()[0];
 
     var padding = Math.floor(ops.quadrantWidth() / data.length)*0.2;
     var bar = ops._bodyG.selectAll("rect.bar")
@@ -442,19 +496,44 @@ dcharts.group.renderBar = function(ops) {
                 return dcharts.default._COLOR(i);
               }
             })
-            .attr("x", function (d, i) {
-                var _resultX = d instanceof Array ? d[0] : i+1;
-                return ops.getX()(_resultX) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
+            .attr("x", function (d) {
+                return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
             })
             .attr("y", function (d) {
-                var _resultY = d instanceof Array ? d[1] : d;
-                return ops.getY()(_resultY);
+                return _y(d[1]);
             })
             .attr("height", function (d) {
-                var _result = d instanceof Array ? d[1] : d;
-                return ops.yStart() - ops.getY(_result);
+                return ops.yStart() - _y(d[1]);
             })
             .attr("width", function(d){
                 return Math.floor(ops.quadrantWidth() / data.length) - padding;
             });
+            // .attr("x", function (d, i) {
+            //     var _resultX = d instanceof Array ? d[0] : i+1;
+            //     return ops.getX()(_resultX) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
+            // })
+            // .attr("y", function (d) {
+            //     var _resultY = d instanceof Array ? d[1] : d;
+            //     return ops.getY()(_resultY);
+            // })
+            // .attr("height", function (d) {
+            //     var _result = d instanceof Array ? d[1] : d;
+            //     return ops.yStart() - ops.getY(_result);
+            // })
+            // .attr("width", function(d){
+            //     return Math.floor(ops.quadrantWidth() / data.length) - padding;
+            // });
+};
+
+//
+dcharts.group.defineBodyClip = function(ops) {
+    var padding = 5;
+    ops._svg.append("defs")
+            .append("clipPath")
+            .attr("id", "body-clip")
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", ops.quadrantWidth() + 2 * padding)
+            .attr("height", ops.quadrantHeight());
 };

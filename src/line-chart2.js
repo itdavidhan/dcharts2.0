@@ -22,12 +22,16 @@ dcharts.lineChart2 = function(selector, options) {
     // 生成svg
     dcharts.group.renderSvg(ops);
 
+    // 生成坐标轴
+    dcharts.group.renderAxes(ops, 'x-bottom');
+    dcharts.group.renderAxes(ops, 'y-left');
+
     // 生成 g.body
     dcharts.group.renderBody(ops);
 
-    // 生成坐标轴
-    dcharts.group.renderAxes(ops);
-
     // 生成线
     dcharts.group.renderLine(ops);
+
+    // 生成点
+    dcharts.group.renderDots(ops);
 };
