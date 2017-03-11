@@ -17,16 +17,18 @@ dcharts.areaChart = function(selector, options) {
     dcharts.group.renderBody(ops);
 
     // 生成坐标轴
-    dcharts.group.renderAxes(ops);
+    dcharts.group.renderAxes(ops, 'x-bottom');
+    dcharts.group.renderAxes(ops, 'x-top');
+    dcharts.group.renderAxes(ops, 'y-left');
+    dcharts.group.renderAxes(ops, 'y-right');
 
     // 生成线
     dcharts.group.renderLine(ops);
 
-    // 生成点
-    // dcharts.group.renderDots(ops);
-
     // 生成块
     dcharts.group.renderArea(ops);
 
+    // 生成点
+    dcharts.group.renderDots(ops);
 
 };

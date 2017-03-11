@@ -166,7 +166,7 @@ button {
 }
 
 .dot {
-  fill: steelblue;
+  fill: #FFF;
   /*stroke: green;*/
   /*stroke-opacity: 1;*/
   r: 4.5;
