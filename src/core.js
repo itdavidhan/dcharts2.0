@@ -142,6 +142,9 @@ dcharts.group.options = function(selector, options) {
         },
         _svg: null,
         _bodyG: null,
+        _axesG: null,
+        _hasGuidLineX: false,
+        _hasGuidLineY: false,
         _line: null
     };
     return ops;
@@ -151,9 +154,16 @@ dcharts.group.options = function(selector, options) {
 dcharts.group.renderSvg = function(ops) {
     if(!ops._svg)
     {
-        ops._svg = ops.getSelector().append("svg");
+        var oDiv = ops.getSelector();
+        ops._svg = oDiv.html('').append("svg");
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
+
+        ops._svg.on('mouseleave', function(d) {
+            dcharts.tooltip.hideTooltip(oDiv);
+        });
+
+        dcharts.tooltip.initTooltip(oDiv);
     }
 };
 
@@ -167,11 +177,14 @@ dcharts.group.renderBody = function(ops) {
                     + ops.xStart() + ","
                     + ops.yEnd() + ")")
                 .attr("clip-path", "url(#body-clip)");
-    }    
+    }
 },
 
 // 生成坐标轴
 dcharts.group.renderAxes = function(ops, type) {
+
+    ops._axesG = ops._svg.append("g")
+            .attr("class", "axes");
 
     switch(type)
     {
@@ -196,52 +209,116 @@ dcharts.group.renderAxes = function(ops, type) {
         var xAxis = d3.svg.axis()
                 .scale(ops.getX())
                 .orient("bottom");
-        ops._svg.append("g")
-            .attr("class", "x-axis")
+                // .ticks(ops.getTicks());
+        ops._axesG.append("g")
+            .attr("class", "x-axis xb")
             .attr("transform", function(){
                 return "translate(" + ops.xStart() + "," + ops.yStart() + ")";
             })
-            .call(xAxis);
+            .call(xAxis)
+            .append("text")
+                .attr("x", (ops.xEnd() - ops.xStart()))
+                .attr("dy", 40)
+                .style("text-anchor", "end")
+                .text(ops.axisTextX());
+        dcharts.group._renderGridLineX(ops, 'xb');
     }
 
     function createXT() {
         var xAxis = d3.svg.axis()
                 .scale(ops.getX())
                 .orient("top");
-        ops._svg.append("g")
-            .attr("class", "x-axis")
+                // .ticks(ops.getTicks());
+        ops._axesG.append("g")
+            .attr("class", "x-axis xt")
             .attr("transform", function(){
                 return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
             })
-            .call(xAxis);
+            .call(xAxis)
+            .append("text")
+                .attr("x", (ops.xEnd() - ops.xStart()))
+                .attr("dy", -40)
+                .style("text-anchor", "end")
+                .text(ops.axisTextX());
+        dcharts.group._renderGridLineX(ops, 'xt');
     }
 
     function createYL() {
         var yAxis = d3.svg.axis()
                 .scale(ops.getY())
-                .orient("left");
-        ops._svg.append("g")
-            .attr("class", "y-axis")
+                .orient("left")
+                .ticks(ops.getTicks());
+        ops._axesG.append("g")
+            .attr("class", "y-axis yl")
             .attr("transform", function(){
                 return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
             })
-            .call(yAxis);
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", -40)
+            .style("text-anchor", "end")
+            .text(ops.axisTextY());
+        dcharts.group._renderGridLineY(ops, 'yl');
     }
 
     function createYR() {
         var yAxis = d3.svg.axis()
                 .scale(ops.getY())
-                .orient("right");
-        ops._svg.append("g")
-            .attr("class", "y-axis")
+                .orient("right")
+                .ticks(ops.getTicks());
+        ops._axesG.append("g")
+            .attr("class", "y-axis yr")
             .attr("transform", function(){
                 return "translate(" + ops.xEnd() + "," + ops.yEnd() + ")";
             })
-            .call(yAxis);
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", 40)
+            .style("text-anchor", "end")
+            .text(ops.axisTextY());
+        dcharts.group._renderGridLineY(ops, 'yr');
     }
 };
 
-// 生成线
+// 生成坐标线 X
+dcharts.group._renderGridLineX = function(ops, type) {
+    if(ops.showLineX() && !ops._hasGuidLineX)
+    {
+        var _y2 = (type == 'xb') ? - ops.quadrantHeight() : ops.quadrantHeight();
+        ops._axesG.selectAll("g.x-axis g.tick")
+            .append("line")
+            .classed("grid-line", true)
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", 0)
+            .attr("y2", _y2);
+
+        ops._hasGuidLineX = true;
+    }
+};
+
+// 生成坐标线 Y
+dcharts.group._renderGridLineY = function(ops, type) {
+    if(ops.showLineY() && !ops._hasGuidLineY)
+    {
+        var _x2 = (type == 'yl') ? ops.quadrantWidth() : -ops.quadrantWidth();
+        ops._axesG.selectAll("g.y-axis g.tick")
+            .append("line")
+            .classed("grid-line", true)
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", _x2)
+            .attr("y2", 0);
+
+        ops._hasGuidLineY = true;
+    }
+};
+
+// 生成线图
 dcharts.group.renderLine = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
@@ -251,6 +328,9 @@ dcharts.group.renderLine = function(ops) {
     _line = d3.svg.line()
             .x(function (d) { return _x(d[0]); })
             .y(function (d) { return _y(d[1]); });
+
+    if(ops.getInterpolate()) _line.interpolate(ops.getInterpolate());
+    if(ops.getTension()) _line.tension(ops.getTension());
 
     ops._bodyG.selectAll("path.line")
             .data(_data)
@@ -284,6 +364,9 @@ dcharts.group.renderArea = function(ops) {
         .y0(_y(0))
         .y1(function(d) { return _y(d[1]); });
 
+    if(ops.getInterpolate()) area.interpolate(ops.getInterpolate());
+    if(ops.getTension()) area.tension(ops.getTension());
+
     ops._bodyG.selectAll("path.area")
             .data(data)
             .enter()
@@ -307,7 +390,7 @@ dcharts.group.renderDots = function(ops) {
     var data = ops.getData();
 
     data.forEach(function (list, i) {
-       ops._bodyG.selectAll("circle._" + i)
+       var dots = ops._bodyG.selectAll("circle._" + i)
                .data(list)
                .enter()
                .append("circle")
@@ -322,6 +405,15 @@ dcharts.group.renderDots = function(ops) {
                .attr("cx", function (d) { return _x(d[0]); })
                .attr("cy", function (d) { return _y(d[1]); })
                .attr("r", 4.5);
+
+       dots.on('mouseenter', function(d) {
+         dcharts.tooltip.showTooltip(d, ops.getSelector());
+       })
+       .on('mousemove', function() {
+         var x = d3.event.pageX;
+         var y = d3.event.pageY;
+         dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+       });
     });
 };
 
