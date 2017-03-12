@@ -496,7 +496,7 @@ dcharts.group.renderBar = function(ops, callback) {
             d3.select(this).transition().style('opacity', '1');
         });
 
-        callback(ops._bar);
+        callback && callback(ops._bar);
 
         if(ops.showText()) showText();
         function showText() {
