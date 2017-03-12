@@ -444,7 +444,7 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops, callback) {
+dcharts.group.renderBar = function(ops) {
     var data = ops.getData[0];
     var _x = ops.getX();
     var _y = ops.getY();
@@ -496,7 +496,7 @@ dcharts.group.renderBar = function(ops, callback) {
             d3.select(this).transition().style('opacity', '1');
         });
 
-        callback && callback(ops._bar);
+        // callback && callback(ops._bar);
 
         if(ops.showText()) showText();
         function showText() {

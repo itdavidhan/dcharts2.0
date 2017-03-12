@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
+      var oBtn = document.querySelector('.change-btn');
       var ops = {
         scale: 'linear',
         data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
@@ -27,17 +28,16 @@
         axisTextX: '月份',
         axisTextY: '数量'
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
-      }
+    };
 
       dcharts.barChart('.div1', ops);
-      dcharts.barChart2('.div2', ops, function(bar) {
-          var bar = bar;
-          bar.on('click.c1', function(d, i) {
-              console.log('cb->', d, i);
-          }).on('click.c2', function() {
-              console.log('cb->', 22);
-          })
-      });
+      dcharts.barChart2('.div2', ops);
+
+      oBtn.onclick = function() {
+          ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
+          console.log(ops);
+          dcharts.barChart2('.div2', ops);
+      };
 
       window.onresize = function() {
           dcharts.barChart('.div1', ops);
@@ -49,6 +49,7 @@
 <body>
   <div class="div1"></div>
   <div class="div2"></div>
+  <a class="change-btn" href="javascript:;">改变div2的颜色</a>
 
 
 

@@ -17,8 +17,10 @@ dcharts.barChart2 = function(selector, options, callback) {
         dcharts.group.renderBody(ops);
 
         // 生成条
-        dcharts.group.renderBar(ops, callback);
+        dcharts.group.renderBar(ops);
     }
 
     render(ops);
+
+    callback && callback(render);
 };
