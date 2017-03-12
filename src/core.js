@@ -74,7 +74,7 @@ dcharts.group.options = function(selector, options) {
            } else if(Number(initData[0])) {
                var _arr = [];
                initData.map(function(n, i) {
-                   var _a = [i, n];
+                   var _a = [i+1, n];
                    _arr.push(_a);
                });
                return [_arr];
@@ -122,7 +122,7 @@ dcharts.group.options = function(selector, options) {
             if(this.getScale() == 'linear')
             {
                 return d3.scale.linear()
-                .domain([0, this.getKeyMax()])
+                .domain([0, this.getKeyMax()+1])
                 // .domain([this.getKeyMin(), this.getKeyMax()])
                 .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'time') {
@@ -473,10 +473,10 @@ dcharts.group.renderDots = function(ops) {
 
 // 生成条/柱
 dcharts.group.renderBar = function(ops) {
+    var data = ops.getData()[0];
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData()[0];
 
     var padding = Math.floor(ops.quadrantWidth() / data.length)*0.2;
     var bar = ops._bodyG.selectAll("rect.bar")
@@ -497,6 +497,7 @@ dcharts.group.renderBar = function(ops) {
               }
             })
             .attr("x", function (d) {
+                console.log(d, d[0]);
                 return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
             })
             .attr("y", function (d) {
@@ -508,24 +509,18 @@ dcharts.group.renderBar = function(ops) {
             .attr("width", function(d){
                 return Math.floor(ops.quadrantWidth() / data.length) - padding;
             });
-            // .attr("x", function (d, i) {
-            //     var _resultX = d instanceof Array ? d[0] : i+1;
-            //     return ops.getX()(_resultX) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
-            // })
-            // .attr("y", function (d) {
-            //     var _resultY = d instanceof Array ? d[1] : d;
-            //     return ops.getY()(_resultY);
-            // })
-            // .attr("height", function (d) {
-            //     var _result = d instanceof Array ? d[1] : d;
-            //     return ops.yStart() - ops.getY(_result);
-            // })
-            // .attr("width", function(d){
-            //     return Math.floor(ops.quadrantWidth() / data.length) - padding;
-            // });
+
+    bar.on('mouseenter', function(d) {
+      dcharts.tooltip.showTooltip(d, ops.getSelector());
+    })
+    .on('mousemove', function() {
+      var x = d3.event.pageX;
+      var y = d3.event.pageY;
+      dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+    });
 };
 
-//
+// body-clip
 dcharts.group.defineBodyClip = function(ops) {
     var padding = 5;
     ops._svg.append("defs")
