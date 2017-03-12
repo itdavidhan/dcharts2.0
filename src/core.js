@@ -33,59 +33,10 @@ dcharts.group.options = function(selector, options) {
         getScale: function() {
             return options.scale;
         },
-        getData: function() {
-            var initData = options.data;
-            // 数据为空
-            if(initData.length == 0 || !(initData instanceof Array))
-            {
-                console.error('数据为空，或者非数组');
-                return [[]];
-            }
-            // 数据嵌套
-            if(initData[0] instanceof Array)
-            {   // 数据嵌套数组
-                if(typeof initData[0][0] !== 'undefined')
-                {
-                    if(initData[0][0] instanceof Array && initData[0][0].length == 2)
-                    {
-                        return initData;
-                    }else if(initData[0][0] instanceof Object) {
-                        var data = [];
-                        initData.map(function(a) {
-                          _a = dcharts.utils.dfc.json2arr(a);
-                          data.push(_a);
-                        });
-                        return data;
-                    }else{
-                        console.error('数据格式错误');
-                        return [[]];
-                    }
-                }else if(initData[0].length == 2){
-                    return initData;
-                }else{
-                    console.error('数据格式错误');
-                    return [[]];
-                }
-            }
-            // 数据不嵌套
-            else if(initData[0] instanceof Object) {
-               var _data = dcharts.utils.dfc.json2arr(initData);
-               return [_data];
-           } else if(Number(initData[0])) {
-               var _arr = [];
-               initData.map(function(n, i) {
-                   var _a = [i+1, n];
-                   _arr.push(_a);
-               });
-               return [_arr];
-           }else{
-               console.error('数据格式错误');
-               return [[]];
-           }
-        },
+        getData: dcharts.handle.data(options.data),
         getValMax: function() {
             var _max = -10000;
-            d3.map(this.getData(), function(d) {
+            d3.map(this.getData, function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[1];
               if(dMax > _max) _max = dMax;
             });
@@ -93,7 +44,7 @@ dcharts.group.options = function(selector, options) {
         },
         getValMin: function() {
             var _min = 10000;
-            d3.map(this.getData(), function(d) {
+            d3.map(this.getData, function(d) {
               var dMin = dcharts.filter.minInArrs(d)[1];
               if(dMin < _min) _min = dMin;
             });
@@ -101,7 +52,7 @@ dcharts.group.options = function(selector, options) {
         },
         getKeyMax: function() {
             var _max = -10000;
-            d3.map(this.getData(), function(d) {
+            d3.map(this.getData, function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[0];
               if(dMax > _max) _max = dMax;
             });
@@ -109,7 +60,7 @@ dcharts.group.options = function(selector, options) {
         },
         getKeyMin: function() {
             var _min = 1000000000;
-            d3.map(this.getData(), function(d) {
+            d3.map(this.getData, function(d) {
               var dMin = dcharts.filter.minInArrs(d)[0];
               if(dMin < _min) _min = dMin;
             });
@@ -130,7 +81,7 @@ dcharts.group.options = function(selector, options) {
                 .domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()])
                 .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'ordinal'){
-                var data = this.getData()[0];
+                var data = this.getData[0];
                 return d3.scale.ordinal()
                 .domain(data.map(function(d) {
                     return d[0];
@@ -166,6 +117,9 @@ dcharts.group.options = function(selector, options) {
         },
         showDot: function() {
             return options.showDot;
+        },
+        showText: function() {
+            return options.showText || false;
         },
         getColor: function() {
             return options.color;
@@ -371,7 +325,7 @@ dcharts.group.renderLine = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var _data = ops.getData();
+    var _data = ops.getData;
 
     _line = d3.svg.line()
             .x(function (d) { return _x(d[0]); })
@@ -405,7 +359,7 @@ dcharts.group.renderArea = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData();
+    var data = ops.getData;
 
     var area = d3.svg.area()
         .x(function(d) { return _x(d[0]); })
@@ -436,7 +390,7 @@ dcharts.group.renderDots = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData();
+    var data = ops.getData;
 
     data.forEach(function (list, i) {
        var dots = ops._bodyG.selectAll("circle._" + i)
@@ -473,7 +427,7 @@ dcharts.group.renderDots = function(ops) {
 
 // 生成条/柱
 dcharts.group.renderBar = function(ops) {
-    var data = ops.getData()[0];
+    var data = ops.getData[0];
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
@@ -497,7 +451,6 @@ dcharts.group.renderBar = function(ops) {
               }
             })
             .attr("x", function (d) {
-                console.log(d, d[0]);
                 return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
             })
             .attr("y", function (d) {
@@ -512,12 +465,41 @@ dcharts.group.renderBar = function(ops) {
 
     bar.on('mouseenter', function(d) {
       dcharts.tooltip.showTooltip(d, ops.getSelector());
+      d3.select(this).transition().style('opacity', '0.8');
     })
     .on('mousemove', function() {
       var x = d3.event.pageX;
       var y = d3.event.pageY;
       dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+    })
+    .on('mouseleave', function() {
+        d3.select(this).transition().style('opacity', '1');
     });
+
+    if(ops.showText()) showText();
+    function showText() {
+        ops._bodyG.selectAll("text.text")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("class", "text")
+            .attr("x", function (d, i) {
+                var _resultX = d instanceof Array ? d[0] : i+1;
+                return _x(_resultX);
+            })
+            .attr("y", function (d) {
+                var _resultY = d instanceof Array ? d[1] : d;
+                return _y(_resultY) + 16; // 16:距离柱形图顶部的距离，根据情况而定
+            })
+            .style({
+              "fill": "#FFF",
+              "font-size": "12px"
+            })
+            .attr("text-anchor", "middle")
+            .text(function(d) {
+              return d instanceof Array ? d[1] : d;
+            });
+    }
 };
 
 // body-clip

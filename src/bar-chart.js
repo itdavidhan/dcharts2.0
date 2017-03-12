@@ -31,7 +31,6 @@ dcharts.barChart = function(selector, options) {
             return dcharts.utils.dfc.json2arr(options.data);
         }
     })();
-    console.log(_data);
     var _valMax = (function() {
         if(_scale == 'linear')
         {

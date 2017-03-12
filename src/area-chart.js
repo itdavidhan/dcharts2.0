@@ -25,6 +25,7 @@ dcharts.areaChart = function(selector, options) {
     // 生成坐标轴
     dcharts.group.renderAxes(ops, 'x-bottom');
     dcharts.group.renderAxes(ops, 'y-left');
+    
     // dcharts.group.renderAxes(ops, 'x-top');
     // dcharts.group.renderAxes(ops, 'y-right');
 
