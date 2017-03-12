@@ -36,7 +36,11 @@
       }
 
       dcharts.barChart('.div1', ops);
-      dcharts.barChart2('.div2', ops);
+      dcharts.barChart2('.div2', ops, function(bar) {
+          bar.on('click', function(index, value) {
+              alert(index, value);
+          });
+      });
 
     //   window.onresize = function() {
     //       dcharts.barChart('.div1', ops);

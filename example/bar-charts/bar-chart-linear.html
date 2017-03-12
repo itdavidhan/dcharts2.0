@@ -30,12 +30,19 @@
       }
 
       dcharts.barChart('.div1', ops);
-      dcharts.barChart2('.div2', ops);
+      dcharts.barChart2('.div2', ops, function(bar) {
+          var bar = bar;
+          bar.on('click.c1', function(d, i) {
+              console.log('cb->', d, i);
+          }).on('click.c2', function() {
+              console.log('cb->', 22);
+          })
+      });
 
-    //   window.onresize = function() {
-    //       dcharts.barChart('.div1', ops);
-    //       dcharts.barChart('.div2', ops);
-    //   };
+      window.onresize = function() {
+          dcharts.barChart('.div1', ops);
+          dcharts.barChart('.div2', ops);
+      };
     };
   </script>
 </head>

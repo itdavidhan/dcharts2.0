@@ -145,9 +145,15 @@ dcharts.group.options = function(selector, options) {
         _svg: null,
         _bodyG: null,
         _axesG: null,
+        _defs: null,
+        _bar: null,
+        _line: null,
+        _axisXb: null,
+        _axisXt: null,
+        _axisYl: null,
+        _axisYr: null,
         _hasGuidLineX: false,
-        _hasGuidLineY: false,
-        _line: null
+        _hasGuidLineY: false
     };
     return ops;
 };
@@ -185,8 +191,11 @@ dcharts.group.renderBody = function(ops) {
 // 生成坐标轴
 dcharts.group.renderAxes = function(ops, type) {
 
-    ops._axesG = ops._svg.append("g")
-            .attr("class", "axes");
+    if(!ops._axesG)
+    {
+        ops._axesG = ops._svg.append("g")
+                .attr("class", "axes");
+    }
 
     switch(type)
     {
@@ -208,65 +217,72 @@ dcharts.group.renderAxes = function(ops, type) {
     }
 
     function createXB() {
-        var xAxis = d3.svg.axis()
-                .scale(ops.getX())
-                .orient("bottom");
-                // .ticks(ops.getTicks());
-        ops._axesG.append("g")
-            .attr("class", "x-axis xb")
-            .attr("transform", function(){
-                return "translate(" + ops.xStart() + "," + ops.yStart() + ")";
-            })
-            .call(xAxis)
-            .append("text")
-                .attr("x", (ops.xEnd() - ops.xStart()))
-                .attr("dy", 40)
-                .style("text-anchor", "end")
-                .text(ops.axisTextX());
-        dcharts.group._renderGridLineX(ops, 'xb');
+        if(!ops._axisXb) {
+            ops._axisXb = d3.svg.axis()
+                    .scale(ops.getX())
+                    .orient("bottom");
+                    // .ticks(ops.getTicks());
+            ops._axesG.append("g")
+                .attr("class", "x-axis xb")
+                .attr("transform", function(){
+                    return "translate(" + ops.xStart() + "," + ops.yStart() + ")";
+                })
+                .call(ops._axisXb)
+                .append("text")
+                    .attr("x", (ops.xEnd() - ops.xStart()))
+                    .attr("dy", 40)
+                    .style("text-anchor", "end")
+                    .text(ops.axisTextX());
+            dcharts.group._renderGridLineX(ops, 'xb');
+        }
     }
 
     function createXT() {
-        var xAxis = d3.svg.axis()
-                .scale(ops.getX())
-                .orient("top");
-                // .ticks(ops.getTicks());
-        ops._axesG.append("g")
-            .attr("class", "x-axis xt")
-            .attr("transform", function(){
-                return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
-            })
-            .call(xAxis)
-            .append("text")
-                .attr("x", (ops.xEnd() - ops.xStart()))
-                .attr("dy", -40)
-                .style("text-anchor", "end")
-                .text(ops.axisTextX());
-        dcharts.group._renderGridLineX(ops, 'xt');
+        if(!ops._axisXt) {
+            ops._axisXt = d3.svg.axis()
+                    .scale(ops.getX())
+                    .orient("top");
+                    // .ticks(ops.getTicks());
+            ops._axesG.append("g")
+                .attr("class", "x-axis xt")
+                .attr("transform", function(){
+                    return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
+                })
+                .call(ops._axisXt)
+                .append("text")
+                    .attr("x", (ops.xEnd() - ops.xStart()))
+                    .attr("dy", -40)
+                    .style("text-anchor", "end")
+                    .text(ops.axisTextX());
+            dcharts.group._renderGridLineX(ops, 'xt');
+        }
     }
 
     function createYL() {
-        var yAxis = d3.svg.axis()
-                .scale(ops.getY())
-                .orient("left")
-                .ticks(ops.getTicks());
-        ops._axesG.append("g")
-            .attr("class", "y-axis yl")
-            .attr("transform", function(){
-                return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
-            })
-            .call(yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", -40)
-            .style("text-anchor", "end")
-            .text(ops.axisTextY());
-        dcharts.group._renderGridLineY(ops, 'yl');
+        if(!ops._sxisYl) {
+            ops._sxisYl = d3.svg.axis()
+                    .scale(ops.getY())
+                    .orient("left")
+                    .ticks(ops.getTicks());
+            ops._axesG.append("g")
+                .attr("class", "y-axis yl")
+                .attr("transform", function(){
+                    return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
+                })
+                .call(ops._sxisYl)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", -40)
+                .style("text-anchor", "end")
+                .text(ops.axisTextY());
+            dcharts.group._renderGridLineY(ops, 'yl');
+        }
     }
 
     function createYR() {
-        var yAxis = d3.svg.axis()
+        if(ops._axisYr) return;
+        ops._axisYr = d3.svg.axis()
                 .scale(ops.getY())
                 .orient("right")
                 .ticks(ops.getTicks());
@@ -275,7 +291,7 @@ dcharts.group.renderAxes = function(ops, type) {
             .attr("transform", function(){
                 return "translate(" + ops.xEnd() + "," + ops.yEnd() + ")";
             })
-            .call(yAxis)
+            .call(ops._axisYr)
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 6)
@@ -327,31 +343,33 @@ dcharts.group.renderLine = function(ops) {
     var _color = ops.getColor();
     var _data = ops.getData;
 
-    _line = d3.svg.line()
-            .x(function (d) { return _x(d[0]); })
-            .y(function (d) { return _y(d[1]); });
+    if(!ops._line) {
+        ops._line = d3.svg.line()
+                .x(function (d) { return _x(d[0]); })
+                .y(function (d) { return _y(d[1]); });
 
-    if(ops.getInterpolate()) _line.interpolate(ops.getInterpolate());
-    if(ops.getTension()) _line.tension(ops.getTension());
+        if(ops.getInterpolate()) _line.interpolate(ops.getInterpolate());
+        if(ops.getTension()) _line.tension(ops.getTension());
 
-    ops._bodyG.selectAll("path.line")
-            .data(_data)
-            .enter()
-            .append("path")
-            .style("stroke", function (d, i) {
-              if(typeof _color != 'undefined' && _color.length > 0)
-              {
-                return _color[i];
-              }else{
-                return dcharts.default._COLOR(i);
-              }
-            })
-            .attr("class", "line");
+        ops._bodyG.selectAll("path.line")
+                .data(_data)
+                .enter()
+                .append("path")
+                .style("stroke", function (d, i) {
+                  if(typeof _color != 'undefined' && _color.length > 0)
+                  {
+                    return _color[i];
+                  }else{
+                    return dcharts.default._COLOR(i);
+                  }
+                })
+                .attr("class", "line");
 
-    ops._bodyG.selectAll("path.line")
-            .data(_data)
-            .transition()
-            .attr("d", function (d) { return _line(d); });
+        ops._bodyG.selectAll("path.line")
+                .data(_data)
+                .transition()
+                .attr("d", function (d) { return _line(d); });
+    }
 };
 
 // 生成块
@@ -426,91 +444,98 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops) {
+dcharts.group.renderBar = function(ops, callback) {
     var data = ops.getData[0];
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
 
     var padding = Math.floor(ops.quadrantWidth() / data.length)*0.2;
-    var bar = ops._bodyG.selectAll("rect.bar")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr("class", "bar");
 
-    ops._bodyG.selectAll("rect.bar")
-            .data(data)
-            .transition()
-            .style("fill", function(d, i) {
-              if(typeof _color !== 'undefined' && _color.length > 0)
-              {
-                return _color[i];
-              }else{
-                return dcharts.default._COLOR(i);
-              }
-            })
-            .attr("x", function (d) {
-                return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
-            })
-            .attr("y", function (d) {
-                return _y(d[1]);
-            })
-            .attr("height", function (d) {
-                return ops.yStart() - _y(d[1]);
-            })
-            .attr("width", function(d){
-                return Math.floor(ops.quadrantWidth() / data.length) - padding;
-            });
+    if(!ops._bar) {
+        ops._bar = ops._bodyG.selectAll("rect.bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar");
 
-    bar.on('mouseenter', function(d) {
-      dcharts.tooltip.showTooltip(d, ops.getSelector());
-      d3.select(this).transition().style('opacity', '0.8');
-    })
-    .on('mousemove', function() {
-      var x = d3.event.pageX;
-      var y = d3.event.pageY;
-      dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
-    })
-    .on('mouseleave', function() {
-        d3.select(this).transition().style('opacity', '1');
-    });
+        ops._bodyG.selectAll("rect.bar")
+                .data(data)
+                .transition()
+                .style("fill", function(d, i) {
+                  if(typeof _color !== 'undefined' && _color.length > 0)
+                  {
+                    return _color[i];
+                  }else{
+                    return dcharts.default._COLOR(i);
+                  }
+                })
+                .attr("x", function (d) {
+                    return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
+                })
+                .attr("y", function (d) {
+                    return _y(d[1]);
+                })
+                .attr("height", function (d) {
+                    return ops.yStart() - _y(d[1]);
+                })
+                .attr("width", function(d){
+                    return Math.floor(ops.quadrantWidth() / data.length) - padding;
+                });
 
-    if(ops.showText()) showText();
-    function showText() {
-        ops._bodyG.selectAll("text.text")
-            .data(data)
-            .enter()
-            .append("text")
-            .attr("class", "text")
-            .attr("x", function (d, i) {
-                var _resultX = d instanceof Array ? d[0] : i+1;
-                return _x(_resultX);
-            })
-            .attr("y", function (d) {
-                var _resultY = d instanceof Array ? d[1] : d;
-                return _y(_resultY) + 16; // 16:距离柱形图顶部的距离，根据情况而定
-            })
-            .style({
-              "fill": "#FFF",
-              "font-size": "12px"
-            })
-            .attr("text-anchor", "middle")
-            .text(function(d) {
-              return d instanceof Array ? d[1] : d;
-            });
+        ops._bar.on('mouseenter.defult1', function(d) {
+          dcharts.tooltip.showTooltip(d, ops.getSelector());
+          d3.select(this).transition().style('opacity', '0.8');
+        })
+        .on('mousemove.defult2', function() {
+          var x = d3.event.pageX;
+          var y = d3.event.pageY;
+          dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+        })
+        .on('mouseleave.defult3', function() {
+            d3.select(this).transition().style('opacity', '1');
+        });
+
+        callback(ops._bar);
+
+        if(ops.showText()) showText();
+        function showText() {
+            ops._bodyG.selectAll("text.text")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "text")
+                .attr("x", function (d, i) {
+                    var _resultX = d instanceof Array ? d[0] : i+1;
+                    return _x(_resultX);
+                })
+                .attr("y", function (d) {
+                    var _resultY = d instanceof Array ? d[1] : d;
+                    return _y(_resultY) + 16; // 16:距离柱形图顶部的距离，根据情况而定
+                })
+                .style({
+                  "fill": "#FFF",
+                  "font-size": "12px"
+                })
+                .attr("text-anchor", "middle")
+                .text(function(d) {
+                  return d instanceof Array ? d[1] : d;
+                });
+        }
     }
 };
 
 // body-clip
 dcharts.group.defineBodyClip = function(ops) {
     var padding = 5;
-    ops._svg.append("defs")
-            .append("clipPath")
-            .attr("id", "body-clip")
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", ops.quadrantWidth() + 2 * padding)
-            .attr("height", ops.quadrantHeight());
+    if(!ops._defs) {
+        ops._defs = ops._svg.append("defs");
+        ops._defs.append("clipPath")
+        .attr("id", "body-clip")
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", ops.quadrantWidth() + 2 * padding)
+        .attr("height", ops.quadrantHeight());
+    }
 };
