@@ -19,7 +19,7 @@
 *
 */
 
-dcharts.barChart2 = function(selector, options, callback) {
+dcharts.barChart = function(selector, options, callback) {
     // 处理数据
     var ops = dcharts.group.options(selector, options);
 

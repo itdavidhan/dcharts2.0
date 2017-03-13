@@ -17,7 +17,7 @@
 * color: <array> example: ['yellow', 'red', 'orange', 'blue', 'green']
 */
 
-dcharts.lineChart2 = function(selector, options) {
+dcharts.lineChart = function(selector, options) {
     // 处理数据
     var ops = dcharts.group.options(selector, options);
 

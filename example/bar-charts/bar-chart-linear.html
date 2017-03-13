@@ -34,23 +34,23 @@
         };
 
         dcharts.barChart('.div1', ops);
-        dcharts.barChart2('.div2', ops);
+        dcharts.barChart('.div2', ops);
 
         oBtn1.onclick = function() {
             ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
             console.log(ops);
-            dcharts.barChart2('.div1', ops);
+            dcharts.barChart('.div1', ops);
         };
 
         oBtn2.onclick = function() {
             ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
             console.log(ops);
-            dcharts.barChart2('.div2', ops);
+            dcharts.barChart('.div2', ops);
         };
 
       window.onresize = function() {
-          dcharts.barChart2('.div1', ops);
-          dcharts.barChart2('.div2', ops);
+          dcharts.barChart('.div1', ops);
+          dcharts.barChart('.div2', ops);
       };
     };
   </script>

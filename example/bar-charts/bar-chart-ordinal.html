@@ -36,7 +36,7 @@
       }
 
       dcharts.barChart('.div1', ops);
-      dcharts.barChart2('.div2', ops, function(bar) {
+      dcharts.barChart('.div2', ops, function(bar) {
           bar.on('click', function(index, value) {
               alert(index, value);
           });
