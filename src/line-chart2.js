@@ -8,6 +8,8 @@
 * ticks: <number> example: 5
 * showLineX: <boolean> example: false
 * showLineY: <boolean> example: true
+* formatX: <string> example: '%'
+* formatY: <string> example: '%'
 * axisTextX: <string> example: 'x轴'
 * axisTextY: <string> example: 'y轴'
 * interpolate: <string> example: 'linear','cardinal','step'

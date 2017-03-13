@@ -8,6 +8,8 @@
 * ticks: <number> example: 5
 * showLineX: <boolean> example: false
 * showLineY: <boolean> example: true
+* formatX: <string> example: '%'
+* formatY: <string> example: '%'
 * axisTextX: <string> example: 'x轴'
 * axisTextY: <string> example: 'y轴'
 * interpolate: <string> example: 'linear','cardinal','step'
@@ -25,7 +27,7 @@ dcharts.areaChart = function(selector, options) {
     // 生成坐标轴
     dcharts.group.renderAxes(ops, 'x-bottom');
     dcharts.group.renderAxes(ops, 'y-left');
-    
+
     // dcharts.group.renderAxes(ops, 'x-top');
     // dcharts.group.renderAxes(ops, 'y-right');
 
