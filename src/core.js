@@ -294,8 +294,8 @@ dcharts.group.renderAxes = function(ops, type) {
     }
 
     function createYL() {
-        if(!ops._sxisYl) {
-            ops._sxisYl = d3.svg.axis()
+        if(!ops._axisYl) {
+            ops._axisYl = d3.svg.axis()
                     .scale(ops.getY())
                     .orient("left")
                     .ticks(ops.getTicks())
@@ -307,7 +307,7 @@ dcharts.group.renderAxes = function(ops, type) {
                 .attr("transform", function(){
                     return "translate(" + ops.xStart() + "," + ops.yEnd() + ")";
                 })
-                .call(ops._sxisYl)
+                .call(ops._axisYl)
                 .append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 6)
@@ -571,6 +571,7 @@ dcharts.group.renderBar = function(ops, callback) {
 
 // 生成饼图
 dcharts.group.renderPie = function(ops) {
+    if (ops._pieG) return;
     var pie = d3.layout.pie()
             .sort(function (d) {
                 return d[0];
@@ -584,13 +585,12 @@ dcharts.group.renderPie = function(ops) {
             .innerRadius(ops.getInnerRadius())
             .padAngle(ops.getPadAngle());
 
-    if (!ops._pieG)
-        _pieG = ops._bodyG.append("g")
-                .attr("class", "pie")
-                .attr("transform", "translate("
-                    + ops.getOuterRadius()
-                    + ","
-                    + ops.getOuterRadius() + ")");
+    ops._pieG = ops._bodyG.append("g")
+            .attr("class", "pie")
+            .attr("transform", "translate("
+                + ops.getOuterRadius()
+                + ","
+                + ops.getOuterRadius() + ")");
 
     dcharts.group._renderSlices(pie, arc, ops);
     dcharts.group._renderLabels(pie, arc, ops);
@@ -599,7 +599,7 @@ dcharts.group.renderPie = function(ops) {
 
 dcharts.group._renderSlices = function(pie, arc, ops) {
     var data = ops.getData()[0];
-    var slices = _pieG.selectAll("path.arc")
+    var slices = ops._pieG.selectAll("path.arc")
             .data(pie(data));
     var _color = ops.getColor();
     var selector = ops.getSelector();
@@ -651,7 +651,7 @@ dcharts.group._renderSlices = function(pie, arc, ops) {
 
 dcharts.group._renderLabels = function(pie, arc, ops) {
     var data = ops.getData()[0];
-    var labels = _pieG.selectAll("text.label")
+    var labels = ops._pieG.selectAll("text.label")
             .data(pie(data));
 
     labels.enter()
