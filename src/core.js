@@ -138,6 +138,18 @@ dcharts.group.options = function(selector, options) {
         getFormatY: function() {
             return options.formatY || '';
         },
+        getPadAngle: function() {
+            return options.padAngle || 0; // 0.01-0.03
+        },
+        getTitle: function() {
+            return options.title || '';
+        },
+        getOuterRadius: function() {
+            return options.outerRadius || ops.getWidth()/2 - ops.getMargin().left - ops.getMargin().right;
+        },
+        getInnerRadius: function() {
+            return (typeof options.innerRadius !== 'undefined') ? options.innerRadius : ops.getOuterRadius()/2;
+        },
         xStart: function() {
             return this.getMargin().left;
         },
@@ -164,6 +176,7 @@ dcharts.group.options = function(selector, options) {
         _area: null,
         _line: null,
         _dots: null,
+        _pieG: null,
         _axisXb: null,
         _axisXt: null,
         _axisYl: null,
@@ -183,9 +196,9 @@ dcharts.group.renderSvg = function(ops) {
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
 
-        ops._svg.on('mouseleave', function(d) {
-            dcharts.tooltip.hideTooltip(oDiv);
-        });
+        // ops._svg.on('mouseleave', function(d) {
+        //     dcharts.tooltip.hideTooltip(oDiv);
+        // });
 
         dcharts.tooltip.initTooltip(oDiv);
     }
@@ -524,6 +537,7 @@ dcharts.group.renderBar = function(ops, callback) {
         })
         .on('mouseleave.defult3', function() {
             d3.select(this).transition().style('opacity', '1');
+            dcharts.tooltip.hideTooltip(ops.getSelector());
         });
 
         callback && callback(ops._bar);
@@ -554,6 +568,107 @@ dcharts.group.renderBar = function(ops, callback) {
         }
     }
 };
+
+// 生成饼图
+dcharts.group.renderPie = function(ops) {
+    var pie = d3.layout.pie()
+            .sort(function (d) {
+                return d[0];
+            })
+            .value(function (d) {
+                return d[1];
+            });
+
+    var arc = d3.svg.arc()
+            .outerRadius(ops.getOuterRadius())
+            .innerRadius(ops.getInnerRadius())
+            .padAngle(ops.getPadAngle());
+
+    if (!ops._pieG)
+        _pieG = ops._bodyG.append("g")
+                .attr("class", "pie")
+                .attr("transform", "translate("
+                    + ops.getOuterRadius()
+                    + ","
+                    + ops.getOuterRadius() + ")");
+
+    dcharts.group._renderSlices(pie, arc, ops);
+    dcharts.group._renderLabels(pie, arc, ops);
+
+};
+
+dcharts.group._renderSlices = function(pie, arc, ops) {
+    var data = ops.getData()[0];
+    var slices = _pieG.selectAll("path.arc")
+            .data(pie(data));
+    var _color = ops.getColor();
+    var selector = ops.getSelector();
+
+    slices.enter()
+            .append("path")
+            .attr("class", "arc")
+            .attr("fill", function (d, i) {
+              if(typeof _color != 'undefined' && _color.length != 0)
+              {
+                return _color[i%_color.length];
+              }else{
+                return dcharts.default._COLOR(i);
+              }
+            });
+
+    slices.transition()
+            .attrTween("d", function (d) {
+                var currentArc = this.__current__;
+
+                if (!currentArc)
+                    currentArc = {startAngle: 0,
+                                    endAngle: 0};
+
+                var interpolate = d3.interpolate(
+                                    currentArc, d);
+
+                this.__current__ = interpolate(1);
+
+                return function (t) {
+                    return arc(interpolate(t));
+                };
+            });
+
+    slices.on('mouseenter', function(d) {
+        dcharts.tooltip.showTooltip(d, selector);
+        d3.select(this).transition().style('opacity', '0.8');
+    })
+    .on('mousemove', function() {
+        var x = d3.event.pageX;
+        var y = d3.event.pageY;
+        dcharts.tooltip.moveTooltip(selector, x, y);
+    })
+    .on('mouseleave', function() {
+        d3.select(this).transition().style('opacity', '1');
+        dcharts.tooltip.hideTooltip(selector);
+    });
+};
+
+dcharts.group._renderLabels = function(pie, arc, ops) {
+    var data = ops.getData()[0];
+    var labels = _pieG.selectAll("text.label")
+            .data(pie(data));
+
+    labels.enter()
+            .append("text")
+            .attr("class", "label");
+
+    labels.transition()
+            .attr("transform", function (d) {
+                return "translate("
+                    + arc.centroid(d) + ")";
+            })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d.data[0];
+            });
+}
 
 // body-clip
 dcharts.group.defineBodyClip = function(ops) {
