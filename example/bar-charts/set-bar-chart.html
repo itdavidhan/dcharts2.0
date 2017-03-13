@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bar chart linear</title>
+  <style media="screen">
+    *{padding: 0; margin: 0;}
+    div{margin: 10px;}
+    .btn-cont{margin-bottom: 20px;}
+    .btn-cont a{padding: 10px; background-color: #EEE; border: 1px solid #DDD; margin-right: 10px;}
+    .btn-cont a:hover{background-color: #000; color: #FFF;}
+    .div1{width: 80%; height: 500px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
+  </style>
+  <link rel="stylesheet" href="../../css/d3.css">
+  <script type="text/javascript">
+    window.onload = function() {
+        var oBtn1 = document.querySelector('.change1');
+        var oBtn2 = document.querySelector('.change2');
+        var oBtn3 = document.querySelector('.change3');
+        var oBtn4 = document.querySelector('.change4');
+        var oBtn5 = document.querySelector('.change5');
+        var ops1 = {
+            scale: 'linear',
+            data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
+            margin: {top: 30, right: 30, bottom: 60, left: 60},
+            ticks: '5',
+            showLineX: false,
+            showLineY: true,
+            formatX: '%',
+            // formatY: '$',
+            // showAxisX: false,
+            // showAxisY: false,
+            showText: true,
+            // axisTextX: '月份',
+            axisTextY: '数量'
+            // color: ['yellow', 'red', 'orange', 'blue', 'green']
+        };
+
+        dcharts.barChart('.div1', ops1, function(set) {
+            oBtn1.onclick = function() {
+                var _c = ['red', 'orange', 'yellow', 'green', 'blue'];
+                set({'color': _c});
+            };
+
+            oBtn2.onclick = function() {
+                set({
+                    'width': 300,
+                    'height': 200
+                });
+            };
+
+            oBtn3.onclick = function() {
+                set('height', 200);
+            };
+
+            oBtn4.onclick = function() {
+                set('ticks', 10);
+            };
+        });
+
+      window.onresize = function() {
+          dcharts.barChart('.div1', ops1);
+      };
+    };
+  </script>
+</head>
+<body>
+    <div class="btn-cont">
+        <a class="change1" href="javascript:;">改变color</a>
+        <a class="change2" href="javascript:;">改变width和height</a>
+        <a class="change3" href="javascript:;">改变height</a>
+        <a class="change4" href="javascript:;">改变刻度ticks</a>
+        <a class="change5" href="javascript:;">复位</a>
+    </div>
+
+    <div class="div1"></div>
+
+
+
+  <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+  <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
+  <script type="text/javascript" src="../../lib/dcharts.js">
+  <!-- <script type="text/javascript" src="../../lib/min/dcharts.js"> -->
+
+  </script>
+</body>
+</html>

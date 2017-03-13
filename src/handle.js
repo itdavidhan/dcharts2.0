@@ -13,7 +13,7 @@ dcharts.handle.data = function(data) {
     {   // 数据嵌套数组
         if(typeof initData[0][0] !== 'undefined')
         {
-            if(initData[0][0] instanceof Array && initData[0][0].length == 2)
+            if(initData[0][0] instanceof Array)
             {
                 return initData;
             }else if(initData[0][0] instanceof Object) {
@@ -27,7 +27,7 @@ dcharts.handle.data = function(data) {
                 console.error('数据格式错误');
                 return [[]];
             }
-        }else if(initData[0].length == 2){
+        }else if((initData[0].length == 2) || (initData[0].length == 3)){
             return initData;
         }else{
             console.error('数据格式错误');

@@ -14,17 +14,26 @@
 *
 */
 
-dcharts.pieChart = function(selector, options) {
+dcharts.pieChart = function(selector, options, callback) {
 
-    // 处理数据
-    var ops = dcharts.group.options(selector, options);
+    function render(selector, options) {
+        // 处理数据
+        var ops = dcharts.group.options(selector, options);
 
-    // 生成svg
-    dcharts.group.renderSvg(ops);
+        // 生成svg
+        dcharts.group.renderSvg(ops);
 
-    // 生成 g.body
-    dcharts.group.renderBody(ops);
+        // 生成 g.body
+        dcharts.group.renderBody(ops);
 
-    // 生成饼图
-    dcharts.group.renderPie(ops);
+        // 生成饼图
+        dcharts.group.renderPie(ops);
+    }
+
+    // 渲染图表
+    render(selector, options);
+
+    // 执行回调
+    dcharts.callback(selector, options, render, callback);
+
 };

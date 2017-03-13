@@ -25,10 +25,10 @@ dcharts.group.options = function(selector, options) {
             return parseFloat(dom.style('height'));
         },
         getWidth: function() {
-            return options.width || this.getSelWdith();
+            return parseFloat(options.width) || this.getSelWdith();
         },
         getHeight: function() {
-            return options.height || this.getSelHeight();
+            return parseFloat(options.height) || this.getSelHeight();
         },
         getScale: function() {
             return options.scale;
@@ -37,7 +37,7 @@ dcharts.group.options = function(selector, options) {
             return dcharts.handle.data(options.data);
         },
         getValMax: function() {
-            var _max = -10000;
+            var _max = -Infinity;
             d3.map(this.getData(), function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[1];
               if(dMax > _max) _max = dMax;
@@ -45,7 +45,7 @@ dcharts.group.options = function(selector, options) {
             return _max;
         },
         getValMin: function() {
-            var _min = 10000;
+            var _min = Infinity;
             d3.map(this.getData(), function(d) {
               var dMin = dcharts.filter.minInArrs(d)[1];
               if(dMin < _min) _min = dMin;
@@ -53,7 +53,7 @@ dcharts.group.options = function(selector, options) {
             return _min;
         },
         getKeyMax: function() {
-            var _max = -10000;
+            var _max = -Infinity;
             d3.map(this.getData(), function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[0];
               if(dMax > _max) _max = dMax;
@@ -61,9 +61,25 @@ dcharts.group.options = function(selector, options) {
             return _max;
         },
         getKeyMin: function() {
-            var _min = 1000000000;
+            var _min = Infinity;
             d3.map(this.getData(), function(d) {
               var dMin = dcharts.filter.minInArrs(d)[0];
+              if(dMin < _min) _min = dMin;
+            });
+            return _min;
+        },
+        getRMax: function() {
+            var _max = -Infinity;
+            d3.map(this.getData(), function(d) {
+              var dMax = dcharts.filter.maxInArrs(d)[2];
+              if(dMax > _max) _max = dMax;
+            });
+            return _max;
+        },
+        getRMin: function() {
+            var _min = Infinity;
+            d3.map(this.getData(), function(d) {
+              var dMin = dcharts.filter.minInArrs(d)[2];
               if(dMin < _min) _min = dMin;
             });
             return _min;
@@ -177,6 +193,7 @@ dcharts.group.options = function(selector, options) {
         _line: null,
         _dots: null,
         _pieG: null,
+        _bubble: null,
         _axisXb: null,
         _axisXt: null,
         _axisYl: null,
@@ -389,8 +406,8 @@ dcharts.group.renderLine = function(ops) {
                 .x(function (d) { return _x(d[0]); })
                 .y(function (d) { return _y(d[1]); });
 
-        if(ops.getInterpolate()) _line.interpolate(ops.getInterpolate());
-        if(ops.getTension()) _line.tension(ops.getTension());
+        if(ops.getInterpolate()) ops._line.interpolate(ops.getInterpolate());
+        if(ops.getTension()) ops._line.tension(ops.getTension());
 
         ops._bodyG.selectAll("path.line")
                 .data(_data)
@@ -409,7 +426,7 @@ dcharts.group.renderLine = function(ops) {
         ops._bodyG.selectAll("path.line")
                 .data(_data)
                 .transition()
-                .attr("d", function (d) { return _line(d); });
+                .attr("d", function (d) { return ops._line(d); });
     }
 };
 
@@ -475,7 +492,7 @@ dcharts.group.renderDots = function(ops) {
                .attr("cy", function (d) { return _y(d[1]); })
                .attr("r", 4.5);
 
-       dots.on('mouseenter', function(d) {
+       ops._dots.on('mouseenter', function(d) {
          dcharts.tooltip.showTooltip(d, ops.getSelector());
        })
        .on('mousemove', function() {
@@ -594,6 +611,16 @@ dcharts.group.renderPie = function(ops) {
 
     dcharts.group._renderSlices(pie, arc, ops);
     dcharts.group._renderLabels(pie, arc, ops);
+    showTitle();
+
+    // 在圆心显示标题
+    function showTitle() {
+        ops._svg.append("text")
+        .attr("dx", ops.getWidth()/2 - ops.getMargin().left)
+        .attr("dy", ops.getWidth()/2 - ops.getMargin().top)
+        .style("text-anchor", "middle")
+        .text(function(d) { return ops.getTitle(); });
+    }
 
 };
 
@@ -669,6 +696,45 @@ dcharts.group._renderLabels = function(pie, arc, ops) {
                 return d.data[0];
             });
 }
+
+// 生成散点图
+dcharts.group.renderBubble = function(ops) {
+    var _data = ops.getData();
+    var _rMax = ops.getRMax(_data[0]);
+    var _rMin = ops.getRMin(_data[0]);
+    var _r = d3.scale.pow().exponent(2).domain([0, 10]).range([0, _rMax]); // <-B
+    var _x = ops.getX();
+    var _y = ops.getY();
+    var _color = ops.getColor();
+
+    if(ops._bubble) return;
+    _data.forEach(function (list, i) {
+        ops._bubble = ops._bodyG.selectAll("circle._" + i)
+                .data(list)
+                .enter()
+                .append("circle")
+                .attr("class", "bubble _" + i);
+
+        ops._bodyG.selectAll("circle._" + i)
+                .data(list)
+                .style("stroke", function (d, j) {
+                    return _color[j%_color.length];
+                })
+                .style("fill", function (d, j) {
+                    return _color[j%_color.length];
+                })
+                .transition()
+                .attr("cx", function (d) {
+                    return _x(d[0]);
+                })
+                .attr("cy", function (d) {
+                    return _y(d[1]);
+                })
+                .attr("r", function (d) {
+                    return _r(d[2]);
+                });
+    });
+};
 
 // body-clip
 dcharts.group.defineBodyClip = function(ops) {

@@ -50,13 +50,19 @@
             // color: ['yellow', 'red', 'orange', 'blue', 'green']
         };
 
-        dcharts.barChart('.div1', ops1);
+        dcharts.barChart('.div1', ops1, function(render) {
+            oBtn1.onclick = function() {
+                ops1.color = ['red', 'orange', 'yellow', 'green', 'blue'];
+                ops1.width = 300;
+                render('.div1', ops1);
+            };
+        });
         dcharts.barChart('.div2', ops2);
 
-        oBtn1.onclick = function() {
-            ops1.color = ['yellow', 'red', 'orange', 'blue', 'green'];
-            dcharts.barChart('.div1', ops1);
-        };
+        // oBtn1.onclick = function() {
+        //     ops1.color = ['yellow', 'red', 'orange', 'blue', 'green'];
+        //     dcharts.barChart('.div1', ops1);
+        // };
 
         oBtn2.onclick = function() {
             // ops2.color = ['yellow', 'red', 'orange', 'blue', 'green'];
@@ -72,6 +78,8 @@
 </head>
 <body>
   <div class="div1"></div>
+  <a class="change-btn1" href="javascript:;">改变div1的颜色</a>
+  <a class="change-btn2" href="javascript:;">改变div2的颜色</a>
   <div class="div2"></div>
   <a class="change-btn1" href="javascript:;">改变div1的颜色</a>
   <a class="change-btn2" href="javascript:;">改变div2的颜色</a>
@@ -80,8 +88,8 @@
 
   <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
   <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
-  <!-- <script type="text/javascript" src="../../lib/dcharts.js"> -->
-  <script type="text/javascript" src="../../lib/min/dcharts.js">
+  <script type="text/javascript" src="../../lib/dcharts.js">
+  <!-- <script type="text/javascript" src="../../lib/min/dcharts.js"> -->
 
   </script>
 </body>

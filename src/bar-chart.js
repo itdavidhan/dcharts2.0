@@ -20,10 +20,11 @@
 */
 
 dcharts.barChart = function(selector, options, callback) {
-    // 处理数据
-    var ops = dcharts.group.options(selector, options);
 
-    function render(ops) {
+    function render(selector, options) {
+        // 处理数据
+        var ops = dcharts.group.options(selector, options);
+
         // 生成svg
         dcharts.group.renderSvg(ops);
 
@@ -40,7 +41,9 @@ dcharts.barChart = function(selector, options, callback) {
         dcharts.group.renderBar(ops);
     }
 
-    render(ops);
+    // 渲染图表
+    render(selector, options);
 
-    callback && callback(render);
+    // 执行回调
+    dcharts.callback(selector, options, render, callback);
 };
