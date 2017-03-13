@@ -14,34 +14,43 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
-      var oBtn = document.querySelector('.change-btn');
-      var ops = {
-        scale: 'linear',
-        data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
-        margin: {top: 30, right: 30, bottom: 60, left: 60},
-        ticks: '5',
-        showLineX: false,
-        showLineY: true,
-        // showAxisX: false,
-        // showAxisY: false,
-        showText: true,
-        axisTextX: '月份',
-        axisTextY: '数量'
-        // color: ['yellow', 'red', 'orange', 'blue', 'green']
-    };
+        var oBtn1 = document.querySelector('.change-btn1');
+        var oBtn2 = document.querySelector('.change-btn2');
+        var ops = {
+            scale: 'linear',
+            data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
+            margin: {top: 30, right: 30, bottom: 60, left: 60},
+            ticks: '5',
+            showLineX: false,
+            showLineY: true,
+            formatX: '%',
+            // formatY: '$',
+            // showAxisX: false,
+            // showAxisY: false,
+            showText: true,
+            axisTextX: '月份',
+            axisTextY: '数量'
+            // color: ['yellow', 'red', 'orange', 'blue', 'green']
+        };
 
-      dcharts.barChart('.div1', ops);
-      dcharts.barChart2('.div2', ops);
+        dcharts.barChart('.div1', ops);
+        dcharts.barChart2('.div2', ops);
 
-      oBtn.onclick = function() {
-          ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
-          console.log(ops);
-          dcharts.barChart2('.div2', ops);
-      };
+        oBtn1.onclick = function() {
+            ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
+            console.log(ops);
+            dcharts.barChart2('.div1', ops);
+        };
+
+        oBtn2.onclick = function() {
+            ops.color = ['yellow', 'red', 'orange', 'blue', 'green'];
+            console.log(ops);
+            dcharts.barChart2('.div2', ops);
+        };
 
       window.onresize = function() {
-          dcharts.barChart('.div1', ops);
-          dcharts.barChart('.div2', ops);
+          dcharts.barChart2('.div1', ops);
+          dcharts.barChart2('.div2', ops);
       };
     };
   </script>
@@ -49,7 +58,8 @@
 <body>
   <div class="div1"></div>
   <div class="div2"></div>
-  <a class="change-btn" href="javascript:;">改变div2的颜色</a>
+  <a class="change-btn1" href="javascript:;">改变div1的颜色</a>
+  <a class="change-btn2" href="javascript:;">改变div2的颜色</a>
 
 
 

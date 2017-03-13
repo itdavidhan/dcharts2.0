@@ -33,10 +33,12 @@ dcharts.group.options = function(selector, options) {
         getScale: function() {
             return options.scale;
         },
-        getData: dcharts.handle.data(options.data),
+        getData: function() {
+            return dcharts.handle.data(options.data);
+        },
         getValMax: function() {
             var _max = -10000;
-            d3.map(this.getData, function(d) {
+            d3.map(this.getData(), function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[1];
               if(dMax > _max) _max = dMax;
             });
@@ -44,7 +46,7 @@ dcharts.group.options = function(selector, options) {
         },
         getValMin: function() {
             var _min = 10000;
-            d3.map(this.getData, function(d) {
+            d3.map(this.getData(), function(d) {
               var dMin = dcharts.filter.minInArrs(d)[1];
               if(dMin < _min) _min = dMin;
             });
@@ -52,7 +54,7 @@ dcharts.group.options = function(selector, options) {
         },
         getKeyMax: function() {
             var _max = -10000;
-            d3.map(this.getData, function(d) {
+            d3.map(this.getData(), function(d) {
               var dMax = dcharts.filter.maxInArrs(d)[0];
               if(dMax > _max) _max = dMax;
             });
@@ -60,7 +62,7 @@ dcharts.group.options = function(selector, options) {
         },
         getKeyMin: function() {
             var _min = 1000000000;
-            d3.map(this.getData, function(d) {
+            d3.map(this.getData(), function(d) {
               var dMin = dcharts.filter.minInArrs(d)[0];
               if(dMin < _min) _min = dMin;
             });
@@ -81,7 +83,7 @@ dcharts.group.options = function(selector, options) {
                 .domain([new Date(2000, 0, 1).getTime(), new Date(2022, 0, 1).getTime()])
                 .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'ordinal'){
-                var data = this.getData[0];
+                var data = this.getData()[0];
                 return d3.scale.ordinal()
                 .domain(data.map(function(d) {
                     return d[0];
@@ -103,6 +105,12 @@ dcharts.group.options = function(selector, options) {
         getTension: function() {
             return options.tension || 0.7;
         },
+        showAxisX: function() {
+            return (typeof options.showAxisX != 'undefined') ? options.showAxisX : true;
+        },
+        showAxisY: function() {
+            return (typeof options.showAxisY != 'undefined') ? options.showAxisY : true;
+        },
         showLineX: function() {
             return options.showLineX || false;
         },
@@ -123,6 +131,12 @@ dcharts.group.options = function(selector, options) {
         },
         getColor: function() {
             return options.color;
+        },
+        getFormatX: function() {
+            return options.formatX || '';
+        },
+        getFormatY: function() {
+            return options.formatY || '';
         },
         xStart: function() {
             return this.getMargin().left;
@@ -147,7 +161,9 @@ dcharts.group.options = function(selector, options) {
         _axesG: null,
         _defs: null,
         _bar: null,
+        _area: null,
         _line: null,
+        _dots: null,
         _axisXb: null,
         _axisXt: null,
         _axisYl: null,
@@ -220,7 +236,10 @@ dcharts.group.renderAxes = function(ops, type) {
         if(!ops._axisXb) {
             ops._axisXb = d3.svg.axis()
                     .scale(ops.getX())
-                    .orient("bottom");
+                    .orient("bottom")
+                    .tickFormat(function(v) {
+                      return v + ops.getFormatX();
+                    });
                     // .ticks(ops.getTicks());
             ops._axesG.append("g")
                 .attr("class", "x-axis xb")
@@ -241,7 +260,10 @@ dcharts.group.renderAxes = function(ops, type) {
         if(!ops._axisXt) {
             ops._axisXt = d3.svg.axis()
                     .scale(ops.getX())
-                    .orient("top");
+                    .orient("top")
+                    .tickFormat(function(v) {
+                      return v + ops.getFormatX();
+                    });
                     // .ticks(ops.getTicks());
             ops._axesG.append("g")
                 .attr("class", "x-axis xt")
@@ -263,7 +285,10 @@ dcharts.group.renderAxes = function(ops, type) {
             ops._sxisYl = d3.svg.axis()
                     .scale(ops.getY())
                     .orient("left")
-                    .ticks(ops.getTicks());
+                    .ticks(ops.getTicks())
+                    .tickFormat(function(v) {
+                      return v + ops.getFormatY();
+                    });
             ops._axesG.append("g")
                 .attr("class", "y-axis yl")
                 .attr("transform", function(){
@@ -285,7 +310,10 @@ dcharts.group.renderAxes = function(ops, type) {
         ops._axisYr = d3.svg.axis()
                 .scale(ops.getY())
                 .orient("right")
-                .ticks(ops.getTicks());
+                .ticks(ops.getTicks())
+                .tickFormat(function(v) {
+                  return v + ops.getFormatY();
+                });
         ops._axesG.append("g")
             .attr("class", "y-axis yr")
             .attr("transform", function(){
@@ -341,7 +369,7 @@ dcharts.group.renderLine = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var _data = ops.getData;
+    var _data = ops.getData();
 
     if(!ops._line) {
         ops._line = d3.svg.line()
@@ -358,7 +386,7 @@ dcharts.group.renderLine = function(ops) {
                 .style("stroke", function (d, i) {
                   if(typeof _color != 'undefined' && _color.length > 0)
                   {
-                    return _color[i];
+                    return _color[i%_color.length];
                   }else{
                     return dcharts.default._COLOR(i);
                   }
@@ -377,9 +405,10 @@ dcharts.group.renderArea = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData;
+    var data = ops.getData();
 
-    var area = d3.svg.area()
+    if(ops._area) return;
+    ops._area = d3.svg.area()
         .x(function(d) { return _x(d[0]); })
         .y0(_y(0))
         .y1(function(d) { return _y(d[1]); });
@@ -394,7 +423,7 @@ dcharts.group.renderArea = function(ops) {
             .style("fill", function (d, i) {
                 if(typeof _color != 'undefined' && _color.length > 0)
                 {
-                  return _color[i];
+                  return _color[i%_color.length];
                 }else{
                   return dcharts.default._COLOR(i);
                 }
@@ -408,10 +437,11 @@ dcharts.group.renderDots = function(ops) {
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
-    var data = ops.getData;
+    var data = ops.getData();
 
     data.forEach(function (list, i) {
-       var dots = ops._bodyG.selectAll("circle._" + i)
+       if(ops._dots) return;
+       ops._dots = ops._bodyG.selectAll("circle._" + i)
                .data(list)
                .enter()
                .append("circle")
@@ -422,7 +452,7 @@ dcharts.group.renderDots = function(ops) {
                .style("stroke", function (d) {
                    if(typeof _color != 'undefined' && _color.length > 0)
                    {
-                     return _color[i];
+                     return _color[i%_color.length];
                    }else{
                      return dcharts.default._COLOR(i);
                    }
@@ -444,8 +474,8 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops) {
-    var data = ops.getData[0];
+dcharts.group.renderBar = function(ops, callback) {
+    var data = ops.getData()[0];
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
@@ -465,7 +495,7 @@ dcharts.group.renderBar = function(ops) {
                 .style("fill", function(d, i) {
                   if(typeof _color !== 'undefined' && _color.length > 0)
                   {
-                    return _color[i];
+                    return _color[i%_color.length];
                   }else{
                     return dcharts.default._COLOR(i);
                   }
@@ -496,7 +526,7 @@ dcharts.group.renderBar = function(ops) {
             d3.select(this).transition().style('opacity', '1');
         });
 
-        // callback && callback(ops._bar);
+        callback && callback(ops._bar);
 
         if(ops.showText()) showText();
         function showText() {
