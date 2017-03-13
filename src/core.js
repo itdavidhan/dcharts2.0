@@ -443,8 +443,8 @@ dcharts.group.renderArea = function(ops) {
         .y0(_y(0))
         .y1(function(d) { return _y(d[1]); });
 
-    if(ops.getInterpolate()) area.interpolate(ops.getInterpolate());
-    if(ops.getTension()) area.tension(ops.getTension());
+    if(ops.getInterpolate()) ops._area.interpolate(ops.getInterpolate());
+    if(ops.getTension()) ops._area.tension(ops.getTension());
 
     ops._bodyG.selectAll("path.area")
             .data(data)
@@ -459,7 +459,7 @@ dcharts.group.renderArea = function(ops) {
                 }
             })
             .attr("class", "area")
-            .attr("d", function(d){return area(d);});
+            .attr("d", function(d){return ops._area(d);});
 };
 
 // 生成圆点

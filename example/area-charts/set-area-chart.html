@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>area chart</title>
+    <style media="screen">
+      *{padding: 0; margin: 0;}
+      div{margin: 10px;}
+      .div1{width: 80%; height: 400px; border: 1px solid #DDD;}
+    </style>
+    <link rel="stylesheet" href="../../css/d3.css">
+    <script type="text/javascript">
+        window.onload = function() {
+            var oBtn1 = document.querySelector('.change1');
+            var ops = {
+                scale: 'linear',
+                data: [
+                    [
+                        {'x': 0, 'y': 5},
+                        {'x': 1, 'y': 7},
+                        {'x': 2, 'y': 2},
+                        {'x': 3, 'y': 6},
+                        {'x': 4, 'y': 3},
+                        {'x': 5, 'y': 5},
+                        {'x': 6, 'y': 2},
+                        {'x': 7, 'y': 6},
+                        {'x': 8, 'y': 8},
+                        {'x': 9, 'y': 3}
+                    ],
+                    [
+                        {'x': 0, 'y': 15},
+                        {'x': 1, 'y': 7},
+                        {'x': 2, 'y': 12},
+                        {'x': 3, 'y': 6},
+                        {'x': 4, 'y': 13},
+                        {'x': 5, 'y': 15},
+                        {'x': 6, 'y': 3},
+                        {'x': 7, 'y': 4},
+                        {'x': 8, 'y': 8},
+                        {'x': 9, 'y': 7}
+                    ],
+                    [
+                        {'x': 0, 'y': 66},
+                        {'x': 1, 'y': 3},
+                        {'x': 2, 'y': 54},
+                        {'x': 3, 'y': 34},
+                        {'x': 4, 'y': 54},
+                        {'x': 5, 'y': 7}
+                    ]
+                ],
+                margin: {top: 80, right: 80, bottom: 80, left: 80},
+                ticks: 6,
+                // showLineX: true,
+                showLineY: true,
+                axisTextX: 'xxxxx',
+                axisTextY: 'yyyyyy',
+                interpolate: 'cardinal',
+                tension: 0.7,
+                color: ['yellow', 'pink', 'orange']
+            };
+            dcharts.areaChart('.div1', ops, function(set) {
+                oBtn1.onclick = function() {
+                    set('color', ['red', 'green', 'blue']);
+                };
+            });
+
+            window.onresize = function() {
+                dcharts.areaChart('.div1', ops);
+            };
+        };
+    </script>
+</head>
+<body>
+    <div class="btn-cont">
+        <a class="change1" href="javascript:;">改变color</a>
+        <!-- <a class="change2" href="javascript:;">改变width和height</a>
+        <a class="change3" href="javascript:;">改变height</a>
+        <a class="change4" href="javascript:;">改变刻度ticks</a>
+        <a class="change5" href="javascript:;">复位</a> -->
+    </div>
+    <div class="div1"></div>
+
+    <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+    <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
+    <script type="text/javascript" src="../../lib/dcharts.js"></script>
+</body>
+</html>
