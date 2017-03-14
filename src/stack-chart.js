@@ -60,4 +60,6 @@ dcharts.group.renderStackBar = function(ops) {
         .attr("width", function() {
             return _w;
         });
+
+    dcharts.tooltip.mountTooltip(ops, _rects);
 };

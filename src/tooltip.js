@@ -13,12 +13,26 @@ dcharts.tooltip.initTooltip = function(_selector) {
   }
 };
 
+dcharts.tooltip.mountTooltip = function(ops, dom) {
+    dom.on('mouseenter', function(d) {
+      dcharts.tooltip.showTooltip(d, ops.getSelector());
+    })
+    .on('mousemove', function() {
+      var x = d3.event.pageX;
+      var y = d3.event.pageY;
+      dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+    })
+    .on('mouseleave', function() {
+        dcharts.tooltip.hideTooltip(ops.getSelector());
+    });
+};
+
 dcharts.tooltip.showTooltip = function(d, _selector, html) {
     var _result = (function() {
         if(d instanceof Array){
             return d[1];
         }else if(d instanceof Object) {
-            return d.data[1];
+            return d.x + ':' + d.y;
         }else{
             return d;
         }

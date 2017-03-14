@@ -492,17 +492,7 @@ dcharts.group.renderDots = function(ops) {
                .attr("cy", function (d) { return _y(d[1]); })
                .attr("r", 4.5);
 
-       ops._dots.on('mouseenter', function(d) {
-         dcharts.tooltip.showTooltip(d, ops.getSelector());
-       })
-       .on('mousemove', function() {
-         var x = d3.event.pageX;
-         var y = d3.event.pageY;
-         dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
-       })
-       .on('mouseleave', function() {
-           dcharts.tooltip.hideTooltip(ops.getSelector());
-       });
+       dcharts.tooltip.mountTooltip(ops, ops._dots);
     });
 };
 
@@ -546,18 +536,13 @@ dcharts.group.renderBar = function(ops, html) {
                     return Math.floor(ops.quadrantWidth() / data.length) - padding;
                 });
 
+        dcharts.tooltip.mountTooltip(ops, ops._bar);
+
         ops._bar.on('mouseenter.defult1', function(d) {
-          dcharts.tooltip.showTooltip(d, ops.getSelector(), html);
           d3.select(this).transition().style('opacity', '0.8');
-        })
-        .on('mousemove.defult2', function() {
-          var x = d3.event.pageX;
-          var y = d3.event.pageY;
-          dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
         })
         .on('mouseleave.defult3', function() {
             d3.select(this).transition().style('opacity', '1');
-            dcharts.tooltip.hideTooltip(ops.getSelector());
         });
 
         if(ops.showText()) showText();
@@ -662,19 +647,7 @@ dcharts.group._renderSlices = function(pie, arc, ops) {
                 };
             });
 
-    slices.on('mouseenter', function(d) {
-        dcharts.tooltip.showTooltip(d, selector);
-        d3.select(this).transition().style('opacity', '0.8');
-    })
-    .on('mousemove', function() {
-        var x = d3.event.pageX;
-        var y = d3.event.pageY;
-        dcharts.tooltip.moveTooltip(selector, x, y);
-    })
-    .on('mouseleave', function() {
-        d3.select(this).transition().style('opacity', '1');
-        dcharts.tooltip.hideTooltip(selector);
-    });
+    dcharts.tooltip.mountTooltip(ops, slices);
 };
 
 dcharts.group._renderLabels = function(pie, arc, ops) {
@@ -742,17 +715,7 @@ dcharts.group.renderBubble = function(ops) {
 
     });
 
-    ops._bubble.on('mouseenter', function(d) {
-      dcharts.tooltip.showTooltip(d, ops.getSelector());
-    })
-    .on('mousemove', function() {
-      var x = d3.event.pageX;
-      var y = d3.event.pageY;
-      dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
-    })
-    .on('mouseleave', function() {
-        dcharts.tooltip.hideTooltip(ops.getSelector());
-    });
+    dcharts.tooltip.mountTooltip(ops, ops._bubble);
 };
 
 // body-clip
