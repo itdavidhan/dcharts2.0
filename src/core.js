@@ -213,10 +213,6 @@ dcharts.group.renderSvg = function(ops) {
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
 
-        // ops._svg.on('mouseleave', function(d) {
-        //     dcharts.tooltip.hideTooltip(oDiv);
-        // });
-
         dcharts.tooltip.initTooltip(oDiv);
     }
 };
@@ -504,7 +500,7 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops, callback) {
+dcharts.group.renderBar = function(ops) {
     var data = ops.getData()[0];
     var _x = ops.getX();
     var _y = ops.getY();
@@ -556,8 +552,6 @@ dcharts.group.renderBar = function(ops, callback) {
             d3.select(this).transition().style('opacity', '1');
             dcharts.tooltip.hideTooltip(ops.getSelector());
         });
-
-        callback && callback(ops._bar);
 
         if(ops.showText()) showText();
         function showText() {

@@ -23,6 +23,9 @@ dcharts.tooltip.showTooltip = function(d, _selector) {
             return d;
         }
     })();
+    var _otherTooltip = d3.select('body').selectAll('div.tooltip');
+    _otherTooltip.transition().style('opacity', 0);
+
     clearTimeout(dcharts.tooltip.timer);
     _selector.select('div.tooltip')
       .style('opacity', 0.8)
@@ -49,8 +52,12 @@ dcharts.tooltip.moveTooltip = function(_selector, x, y) {
 dcharts.tooltip.hideTooltip = function(_selector) {
     clearTimeout(dcharts.tooltip.timer);
     dcharts.tooltip.timer = setTimeout(function() {
-        _selector.select('div.tooltip')
-           .transition()
-           .style('opacity', 0);
+        dcharts.tooltip._hide(_selector);
     }, 1000);
+};
+
+dcharts.tooltip._hide = function(_selector) {
+    _selector.select('div.tooltip')
+       .transition()
+       .style('opacity', 0);
 };
