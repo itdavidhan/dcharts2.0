@@ -231,10 +231,10 @@ button {
 .tooltip{
   position: absolute;
   padding: 10px;
-  background-color: #000;
-  color: #FFF;
+  background-color: #FFF;
+  color: #000;
   border-radius: 4px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,.4);
+  box-shadow: rgb(163, 163, 164) 0px 0px 20px -3px;
 }
 
 .ring {

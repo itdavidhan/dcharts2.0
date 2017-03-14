@@ -5,7 +5,8 @@ var dcharts = {
 
 dcharts.default = {};
 dcharts.default._MARGIN = {top: 30, left: 30, right: 30, bottom: 30};
-dcharts.default._COLOR = d3.scale.category10();
+// dcharts.default._COLOR = d3.scale.category10();
+dcharts.default._COLOR = ['#5282e4', '#b5c334', '#fdcf10', '#e97c24', '#c1222a', '#ff8562', '#9bcb62', '#fbd960', '#f3a53a'];
 
 // 图表组合
 dcharts.group = {};
@@ -146,7 +147,7 @@ dcharts.group.options = function(selector, options) {
             return options.showText || false;
         },
         getColor: function() {
-            return options.color;
+            return options.color || dcharts.default._COLOR;
         },
         getFormatX: function() {
             return options.formatX || '';
@@ -500,7 +501,7 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops) {
+dcharts.group.renderBar = function(ops, html) {
     var data = ops.getData()[0];
     var _x = ops.getX();
     var _y = ops.getY();
@@ -540,7 +541,7 @@ dcharts.group.renderBar = function(ops) {
                 });
 
         ops._bar.on('mouseenter.defult1', function(d) {
-          dcharts.tooltip.showTooltip(d, ops.getSelector());
+          dcharts.tooltip.showTooltip(d, ops.getSelector(), html);
           d3.select(this).transition().style('opacity', '0.8');
         })
         .on('mousemove.defult2', function() {

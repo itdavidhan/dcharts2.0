@@ -13,7 +13,7 @@ dcharts.tooltip.initTooltip = function(_selector) {
   }
 };
 
-dcharts.tooltip.showTooltip = function(d, _selector) {
+dcharts.tooltip.showTooltip = function(d, _selector, html) {
     var _result = (function() {
         if(d instanceof Array){
             return d[1];
@@ -23,13 +23,14 @@ dcharts.tooltip.showTooltip = function(d, _selector) {
             return d;
         }
     })();
+    var _html = html || _result;
     var _otherTooltip = d3.select('body').selectAll('div.tooltip');
     _otherTooltip.transition().style('opacity', 0);
 
     clearTimeout(dcharts.tooltip.timer);
     _selector.select('div.tooltip')
-      .style('opacity', 0.8)
-      .html(_result);
+      .style('opacity', 1)
+      .html(_html);
 };
 
 dcharts.tooltip.moveTooltip = function(_selector, x, y) {
