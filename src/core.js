@@ -5,8 +5,8 @@ var dcharts = {
 
 dcharts.default = {};
 dcharts.default._MARGIN = {top: 30, left: 30, right: 30, bottom: 30};
-// dcharts.default._COLOR = d3.scale.category10();
-dcharts.default._COLOR = ['#5282e4', '#b5c334', '#fdcf10', '#e97c24', '#c1222a', '#ff8562', '#9bcb62', '#fbd960', '#f3a53a'];
+dcharts.default._COLOR = d3.scale.category10();
+dcharts.default._colorArr = ['#5282e4', '#b5c334', '#fdcf10', '#e97c24', '#c1222a', '#ff8562', '#9bcb62', '#fbd960', '#f3a53a'];
 
 // 图表组合
 dcharts.group = {};
@@ -32,10 +32,13 @@ dcharts.group.options = function(selector, options) {
             return parseFloat(options.height) || this.getSelHeight();
         },
         getScale: function() {
-            return options.scale;
+            return options.scale || 'linear';
         },
         getData: function() {
             return dcharts.handle.data(options.data);
+        },
+        getOriginalData: function() {
+            return options.data;
         },
         getValMax: function() {
             var _max = -Infinity;
@@ -92,7 +95,7 @@ dcharts.group.options = function(selector, options) {
             if(this.getScale() == 'linear')
             {
                 return d3.scale.linear()
-                .domain([0, this.getKeyMax()+1])
+                .domain([0, this.getKeyMax()])
                 // .domain([this.getKeyMin(), this.getKeyMax()])
                 .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'time') {
@@ -117,7 +120,7 @@ dcharts.group.options = function(selector, options) {
             return options.ticks;
         },
         getInterpolate: function() {
-            return options.interpolate || 'cardinal';
+            return options.interpolate || 'linear';
         },
         getTension: function() {
             return options.tension || 0.7;
@@ -147,7 +150,7 @@ dcharts.group.options = function(selector, options) {
             return options.showText || false;
         },
         getColor: function() {
-            return options.color || dcharts.default._COLOR;
+            return options.color || dcharts.default._colorArr;
         },
         getFormatX: function() {
             return options.formatX || '';
@@ -466,8 +469,8 @@ dcharts.group.renderDots = function(ops) {
     var _color = ops.getColor();
     var data = ops.getData();
 
+    if(ops._dots) return;
     data.forEach(function (list, i) {
-       if(ops._dots) return;
        ops._dots = ops._bodyG.selectAll("circle._" + i)
                .data(list)
                .enter()
@@ -496,6 +499,9 @@ dcharts.group.renderDots = function(ops) {
          var x = d3.event.pageX;
          var y = d3.event.pageY;
          dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+       })
+       .on('mouseleave', function() {
+           dcharts.tooltip.hideTooltip(ops.getSelector());
        });
     });
 };
@@ -726,7 +732,12 @@ dcharts.group.renderBubble = function(ops) {
                     return _y(d[1]);
                 })
                 .attr("r", function (d) {
-                    return _r(d[2]);
+                    if(d[2]) {
+                        return _r(d[2]);
+                    }else {
+                        return 5;
+                    }
+
                 });
 
     });
@@ -746,7 +757,7 @@ dcharts.group.renderBubble = function(ops) {
 
 // body-clip
 dcharts.group.defineBodyClip = function(ops) {
-    var padding = 5;
+    var padding = Math.floor(ops.quadrantWidth() / ops.getData()[0].length)*0.2;
     if(!ops._defs) {
         ops._defs = ops._svg.append("defs");
         ops._defs.append("clipPath")

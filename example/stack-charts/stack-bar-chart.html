@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>stack bar chart</title>
+  <style media="screen">
+    *{padding: 0; margin: 0;}
+    div{margin: 10px;}
+    .div1{width: 80%; height: 500px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
+  </style>
+  <link rel="stylesheet" href="../../css/d3.css">
+  <script type="text/javascript">
+    window.onload = function() {
+        var oBtn1 = document.querySelector('.change-btn1');
+        var oBtn2 = document.querySelector('.change-btn2');
+        var ops1 = {
+            scale: 'ordinal',
+            data: [
+                [
+                    {'x': '绿茶', 'y': 123},
+                    {'x': '红茶', 'y': 54},
+                    {'x': '茉莉花茶', 'y': 134},
+                    {'x': '菊花茶', 'y': 54},
+                    {'x': '普洱茶', 'y': 27},
+                    {'x': '大麦茶', 'y': 37}
+                ],
+                [
+                    {'x': '绿茶', 'y': 23},
+                    {'x': '红茶', 'y': 54},
+                    {'x': '茉莉花茶', 'y': 34},
+                    {'x': '菊花茶', 'y': 254},
+                    {'x': '普洱茶', 'y': 227},
+                    {'x': '大麦茶', 'y': 37}
+                ],
+                [
+                    {'x': '绿茶', 'y': 23},
+                    {'x': '红茶', 'y': 54},
+                    {'x': '茉莉花茶', 'y': 234},
+                    {'x': '菊花茶', 'y': 54},
+                    {'x': '普洱茶', 'y': 27},
+                    {'x': '大麦茶', 'y': 237}
+                ]
+            ],
+            margin: {top: 30, right: 30, bottom: 60, left: 60},
+            ticks: '5',
+            showLineX: false,
+            showLineY: true,
+            // formatX: '%',
+            // formatY: '$',
+            // showAxisX: false,
+            // showAxisY: false,
+            showText: true,
+            // axisTextX: '月份',
+            axisTextY: '数量'
+            // color: ['yellow', 'red', 'orange', 'blue', 'green']
+        };
+
+        dcharts.stackChart('.div1', ops1, function(render) {
+            oBtn1.onclick = function() {
+                ops1.color = ['red', 'orange', 'yellow', 'green', 'blue'];
+                ops1.width = 300;
+                render('.div1', ops1);
+            };
+        });
+    };
+  </script>
+</head>
+<body>
+  <div class="div1"></div>
+  <a class="change-btn1" href="javascript:;">改变div1的颜色</a>
+  <a class="change-btn2" href="javascript:;">改变div2的颜色</a>
+
+
+  <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+  <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
+  <script type="text/javascript" src="../../lib/dcharts.js"></script>
+</body>
+</html>
