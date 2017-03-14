@@ -697,12 +697,12 @@ dcharts.group._renderLabels = function(pie, arc, ops) {
             });
 }
 
-// 生成散点图
+// 生成气泡图
 dcharts.group.renderBubble = function(ops) {
     var _data = ops.getData();
     var _rMax = ops.getRMax(_data[0]);
     var _rMin = ops.getRMin(_data[0]);
-    var _r = d3.scale.pow().exponent(2).domain([0, 10]).range([0, _rMax]); // <-B
+    var _r = d3.scale.pow().exponent(1).domain([_rMin, _rMax]).range([0, 50]); // <-B
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
@@ -733,6 +733,19 @@ dcharts.group.renderBubble = function(ops) {
                 .attr("r", function (d) {
                     return _r(d[2]);
                 });
+
+    });
+
+    ops._bubble.on('mouseenter', function(d) {
+      dcharts.tooltip.showTooltip(d, ops.getSelector());
+    })
+    .on('mousemove', function() {
+      var x = d3.event.pageX;
+      var y = d3.event.pageY;
+      dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
+    })
+    .on('mouseleave', function() {
+        dcharts.tooltip.hideTooltip(ops.getSelector());
     });
 };
 
