@@ -26,6 +26,7 @@ gulp.task('dcct', function() {
         path + 'pie-chart.js',
         path + 'stack-chart.js',
         path + 'bubble-chart.js',
+        path + 'index-card.js',
         path + 'callback.js',
         path + 'tooltip.js',
         path + 'flicker.js',

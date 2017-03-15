@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>line chart</title>
+  <style media="screen">
+    *{padding: 0; margin: 0;}
+    div{margin: 10px;}
+    .div1{width: 80%; height: 500px; border: 1px solid #DDD;}
+    .div2{width: 50%; height: 300px; border: 1px solid #DDD;}
+  </style>
+  <link rel="stylesheet" href="../../css/d3.css">
+  <script type="text/javascript">
+    window.onload = function() {
+      var ops1 = {
+          'name': '2017年楼市指数',
+          'num': '10,0000,234',
+          'remark': '北京地区'
+      };
+      var ops2 = {
+          'name': '2018年股市指数',
+          'num': '40,0000,234',
+          'remark': '纳斯达克'
+      };
+
+      dcharts.indexCard('.div1', ops1);
+      dcharts.indexCard('.div2', ops2);
+
+    };
+  </script>
+</head>
+<body>
+  <div class="div1"></div>
+  <div class="div2"></div>
+
+
+
+  <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+  <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
+  <script type="text/javascript" src="../../lib/dcharts.js"></script>
+</body>
+</html>

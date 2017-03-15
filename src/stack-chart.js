@@ -69,13 +69,19 @@ dcharts.group.renderStackBar = function(ops) {
     var _rects = _stackG.selectAll('rect')
         .data(function(d) {return d;})
         .enter()
-        .append('rect')
-        .attr("x", function(d) {return _x(d.x) - (_w)/2; })
-        .attr("y", function(d) {return ops.quadrantHeight() - _y(d.y0) - _y(d.y); })
-        .attr("height", function(d) {return _y(d.y); })
-        .attr("width", function() {
-            return _w;
-        });
+        .append('rect');
+
+    _rects.attr("x", function(d) {return _x(d.x) - (_w)/2; })
+    .attr("y", ops.quadrantHeight())
+    .transition()
+    .delay(function(d, i) {
+        return i*100;
+    })
+    .attr("y", function(d) {return ops.quadrantHeight() - _y(d.y0) - _y(d.y); })
+    .attr("height", function(d) {return _y(d.y); })
+    .attr("width", function() {
+        return _w;
+    });
 
     dcharts.tooltip.mountTooltip(ops, _rects);
 };

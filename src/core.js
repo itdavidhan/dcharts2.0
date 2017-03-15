@@ -188,6 +188,7 @@ dcharts.group.options = function(selector, options) {
         quadrantHeight: function() {
             return this.getHeight() - this.getMargin().bottom - this.getMargin().top;
         },
+        _dchartCont: null,
         _svg: null,
         _bodyG: null,
         _axesG: null,
@@ -210,14 +211,13 @@ dcharts.group.options = function(selector, options) {
 
 // 生成svg
 dcharts.group.renderSvg = function(ops) {
-    if(!ops._svg)
-    {
-        var oDiv = ops.getSelector();
-        ops._svg = oDiv.html('').append("svg");
+    if(!ops._dchartCont) {
+        var selector = ops.getSelector();
+        ops._dchartCont = selector.html('').append('div').attr('class', 'dcharts-container');
+        ops._svg = ops._dchartCont.append("svg");
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
-
-        dcharts.tooltip.initTooltip(oDiv);
+        dcharts.tooltip.initTooltip(ops._dchartCont);
     }
 };
 
@@ -498,7 +498,7 @@ dcharts.group.renderDots = function(ops) {
 };
 
 // 生成条/柱
-dcharts.group.renderBar = function(ops, html) {
+dcharts.group.renderBar = function(ops) {
     var data = ops.getData()[0];
     var _x = ops.getX();
     var _y = ops.getY();
