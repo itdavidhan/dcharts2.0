@@ -17,6 +17,9 @@ dcharts.group.options = function(selector, options) {
         getSelector: function() {
             return d3.select(selector);
         },
+        getBox: function() {
+            return this.getSelector().select('.dcharts-container');
+        },
         getSelWdith: function() {
             var dom = this.getSelector();
             return parseFloat(dom.style('width'));

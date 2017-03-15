@@ -18,8 +18,9 @@ dcharts.tooltip.mountTooltip = function(ops, dom) {
       dcharts.tooltip.showTooltip(d, ops.getSelector());
     })
     .on('mousemove', function() {
-      var x = d3.event.pageX;
-      var y = d3.event.pageY;
+      var arr = d3.mouse(ops.getBox()[0][0]);
+      var x = arr[0];
+      var y = arr[1];
       dcharts.tooltip.moveTooltip(ops.getSelector(), x, y);
     })
     .on('mouseleave', function() {
