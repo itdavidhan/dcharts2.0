@@ -1,0 +1,4 @@
+
+dcharts.legend = function() {
+
+};
