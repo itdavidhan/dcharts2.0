@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>bar chart ordinal</title>
+  <title>cross bar chart ordinal</title>
   <style media="screen">
     *{padding: 0; margin: 0;}
     div{margin: 10px;}
@@ -24,26 +24,21 @@
           {'key': '山羊', 'value': 8},
           {'key': '狗', 'value': 3}
         ],
-        margin: {top: 30, right: 30, bottom: 60, left: 60},
+        margin: {top: 60, right: 60, bottom: 60, left: 60},
         ticks: 2,
         // showLineX: true,
         showLineY: true,
         formatX: '',
-        formatY: '$',
+        // formatY: '$',
         axisTextX: '动物种类',
         axisTextY: '动物数量'
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       }
 
-      dcharts.barChart('.div1', ops);
+      dcharts.crossBarChart('.div1', ops);
       dcharts.barChart('.div2', ops, function(set) {
 
       });
-
-    //   window.onresize = function() {
-    //       dcharts.barChart('.div1', ops);
-    //       dcharts.barChart('.div2', ops);
-    //   };
 
     };
   </script>
