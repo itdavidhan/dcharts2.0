@@ -68,7 +68,7 @@ dcharts.tooltip.hideTooltip = function(_selector) {
     clearTimeout(dcharts.tooltip.timer);
     dcharts.tooltip.timer = setTimeout(function() {
         dcharts.tooltip._hide(_selector);
-    }, 1000);
+    }, 800);
 };
 
 dcharts.tooltip._hide = function(_selector) {

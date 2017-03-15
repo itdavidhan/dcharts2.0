@@ -14,6 +14,7 @@ dcharts.crossBarChart = function(selector, options, callback) {
         .domain(ops.data.map(function(d) {
             return d[0];
         })).rangePoints([0, ops.quadrantHeight()], 1);
+        ops.color = ops.getColor();
         ops.padding = Math.floor(ops.quadrantHeight() / ops.data.length)*0.2;
 
         // 生成svg
@@ -84,13 +85,10 @@ dcharts.crossBarChart = function(selector, options, callback) {
                 .append("rect")
                 .attr("class", "bar");
 
-        ops._bodyG.selectAll("rect.bar")
-                .data(ops.data)
-                .transition()
-                .style("fill", function(d, i) {
-                  if(typeof ops.getColor() !== 'undefined' && ops.getColor().length > 0)
+        ops._bar.style("fill", function(d, i) {
+                  if(typeof ops.color !== 'undefined' && ops.color.length > 0)
                   {
-                    return ops.getColor()[i%ops.getColor().length];
+                    return ops.color[i%ops.color.length];
                   }else{
                     return dcharts.default._COLOR(i);
                   }
@@ -101,6 +99,13 @@ dcharts.crossBarChart = function(selector, options, callback) {
                 .attr("x", function (d) {
                     return 0;
                 })
+                .attr("width", 0)
+                .transition()
+                // .duration(500)
+                .delay(function(d, i) {
+                    return i*100;
+                })
+                .ease('linear')
                 .attr("width", function (d) {
                     return ops.x(d[1]);
                 })

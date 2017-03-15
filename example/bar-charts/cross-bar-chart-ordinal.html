@@ -32,14 +32,25 @@
         // showLineY: true,
         formatX: '',
         // formatY: '$',
-        axisTextX: '动物种类',
+        // axisTextX: '动物种类',
         axisTextY: '动物数量'
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       }
 
       dcharts.crossBarChart('.div1', ops, function(set) {
+          var d = [
+            {'key': '狮子', 'value': 14},
+            {'key': '老虎', 'value': 16},
+            {'key': '长颈鹿', 'value': 12},
+            {'key': '猎豹', 'value': 18},
+            {'key': '山羊', 'value': 18},
+            {'key': '狗', 'value': 13}
+          ]
           oBtn.onclick = function() {
-              set('color', ['red']);
+              set({
+                  'data': d
+                //   'color': ['red']
+              });
           };
       });
       dcharts.barChart('.div2', ops);

@@ -95,7 +95,7 @@ dcharts.group.options = function(selector, options) {
             if(this.getScale() == 'linear')
             {
                 return d3.scale.linear()
-                .domain([0, this.getKeyMax()])
+                .domain([0, this.getKeyMax()+1])
                 // .domain([this.getKeyMin(), this.getKeyMax()])
                 .range([0, ops.quadrantWidth()]);
             }else if(this.getScale() == 'time') {
@@ -426,7 +426,7 @@ dcharts.group.renderLine = function(ops) {
         ops._bodyG.selectAll("path.line")
                 .data(_data)
                 .transition()
-                .attr("d", function (d) { return ops._line(d); });
+                .attr("d", function (d) {return ops._line(d); });
     }
 };
 
@@ -458,6 +458,7 @@ dcharts.group.renderArea = function(ops) {
                   return dcharts.default._COLOR(i);
                 }
             })
+            .transition()
             .attr("class", "area")
             .attr("d", function(d){return ops._area(d);});
 };
@@ -514,7 +515,13 @@ dcharts.group.renderBar = function(ops, html) {
 
         ops._bodyG.selectAll("rect.bar")
                 .data(data)
+                .attr("y", ops.quadrantHeight())
                 .transition()
+                // .duration(500)
+                .delay(function(d, i) {
+                    return i*100;
+                })
+                .ease('linear')
                 .style("fill", function(d, i) {
                   if(typeof _color !== 'undefined' && _color.length > 0)
                   {
