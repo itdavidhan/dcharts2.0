@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
+      var oBtn = document.querySelector('#btn1');
       var ops = {
         scale: 'ordinal',
         data: [
@@ -36,15 +37,18 @@
         // color: ['yellow', 'red', 'orange', 'blue', 'green']
       }
 
-      dcharts.crossBarChart('.div1', ops);
-      dcharts.barChart('.div2', ops, function(set) {
-
+      dcharts.crossBarChart('.div1', ops, function(set) {
+          oBtn.onclick = function() {
+              set('color', ['red']);
+          };
       });
+      dcharts.barChart('.div2', ops);
 
     };
   </script>
 </head>
 <body>
+  <a href="#" id="btn1">change color</a>
   <div class="div1"></div>
   <div class="div2"></div>
 
