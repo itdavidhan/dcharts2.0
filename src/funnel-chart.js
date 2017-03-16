@@ -17,12 +17,12 @@ dcharts.funnelChart = function(selector, options, callback) {
     function render(selector, options) {
         var ops = dcharts.group.options(selector, options);
         var data = ops.getData()[0];
-        console.log(data);
         var chart = new FunnelChart({
         				data: data,
         				width: ops.getWidth(),
         				height: ops.getHeight(),
-        				bottomPct: ops.getBottomPct()
+        				bottomPct: ops.getBottomPct(),
+                        color: ops.getColor()
         			});
         chart.draw(selector);
     }
@@ -47,6 +47,7 @@ dcharts.funnelChart = function(selector, options, callback) {
     */
 
     this.data = options.data;
+    this.color = options.color;
     this.totalEngagement = 0;
     for(var i = 0; i < this.data.length; i++){
       this.totalEngagement += this.data[i][1];
@@ -117,7 +118,7 @@ dcharts.funnelChart = function(selector, options, callback) {
                     .y(function(d) { return d[1]; });
 
     // Automatically generates colors for each trapezoid in funnel
-    var colorScale = d3.scale.category10();
+    var colorScale = this.color;
 
     var paths = this._createPaths();
 
@@ -144,7 +145,7 @@ dcharts.funnelChart = function(selector, options, callback) {
                         .duration(totalLength/speed)
                         .ease("linear")
                         .attr("d", function(d){return funnelPath(paths[i]);})
-                        .attr("fill", function(d){return colorScale(i);});
+                        .attr("fill", function(d){return colorScale[i];});
 
       funnelSvg
       .append('svg:text')
