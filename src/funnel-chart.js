@@ -24,7 +24,13 @@ dcharts.funnelChart = function(selector, options, callback) {
         				bottomPct: ops.getBottomPct(),
                         color: ops.getColor()
         			});
-        chart.draw(selector);
+
+        chart.draw(selector, handlePath);
+
+        function handlePath() {
+            var _path = d3.select(selector).selectAll('.trapezoid-path');
+            dcharts.tooltip.mountTooltip(ops, _path);
+        }
     }
 };
 
@@ -34,18 +40,6 @@ dcharts.funnelChart = function(selector, options, callback) {
       DEFAULT_BOTTOM_PERCENT = 1/3;
 
   window.FunnelChart = function(options) {
-    /* Parameters:
-      data:
-        Array containing arrays of categories and engagement in order from greatest expected funnel engagement to lowest.
-        I.e. Button loads -> Short link hits
-        Ex: [['Button Loads', 1500], ['Button Clicks', 300], ['Subscribers', 150], ['Shortlink Hits', 100]]
-      width & height:
-        Optional parameters for width & height of chart in pixels, otherwise default width/height are used
-      bottomPct:
-        Optional parameter that specifies the percent of the total width the bottom of the trapezoid is
-        This is used to calculate the slope, so the chart's view can be changed by changing this value
-    */
-
     this.data = options.data;
     this.color = options.color;
     this.totalEngagement = 0;
@@ -99,9 +93,9 @@ dcharts.funnelChart = function(selector, options, callback) {
     return trapezoids;
   };
 
-  window.FunnelChart.prototype.draw = function(elem, speed){
+  window.FunnelChart.prototype.draw = function(elem, callback){
     var DEFAULT_SPEED = 10;
-    speed = typeof speed !== 'undefined' ? speed : DEFAULT_SPEED;
+    var speed = DEFAULT_SPEED;
 
     var selector = d3.select(elem);
     var funnelSvg = selector.html('')
@@ -122,19 +116,19 @@ dcharts.funnelChart = function(selector, options, callback) {
 
     var paths = this._createPaths();
 
+    var _dchartCont = selector.select('.dcharts-container');
+    dcharts.tooltip.initTooltip(_dchartCont);
+
     function drawTrapezoids(funnel, i){
       var trapezoid = funnelSvg
                       .append('svg:path')
+                      .attr('class', 'trapezoid-path')
                       .attr('d', function(d){
                         return funnelPath(
                             [paths[i][0], paths[i][1], paths[i][2],
                             paths[i][2], paths[i][1], paths[i][2]]);
                       })
                       .attr('fill', '#fff');
-
-      trapezoid.on('click', function(i) {
-          alert(i);
-      });
 
       nextHeight = paths[i][[paths[i].length]-1];
 
@@ -145,7 +139,7 @@ dcharts.funnelChart = function(selector, options, callback) {
                         .duration(totalLength/speed)
                         .ease("linear")
                         .attr("d", function(d){return funnelPath(paths[i]);})
-                        .attr("fill", function(d){return colorScale[i];});
+                        .attr("fill", function(d){return colorScale[i%colorScale.length];});
 
       funnelSvg
       .append('svg:text')
@@ -162,6 +156,7 @@ dcharts.funnelChart = function(selector, options, callback) {
           drawTrapezoids(funnel, i+1);
         });
       }
+      callback();
     }
 
     drawTrapezoids(this, 0);

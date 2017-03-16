@@ -14,8 +14,9 @@ dcharts.tooltip.initTooltip = function(_selector) {
 };
 
 dcharts.tooltip.mountTooltip = function(ops, dom) {
-    dom.on('mouseenter', function(d) {
-        dcharts.tooltip.showTooltip(d, ops.getSelector());
+    dom.on('mouseenter', function(d, i) {
+        var _d = d || ops.getData()[0][i];
+        dcharts.tooltip.showTooltip(_d, ops.getSelector());
     })
     .on('mousemove', function() {
       var arr = d3.mouse(ops.getBox()[0][0]);
