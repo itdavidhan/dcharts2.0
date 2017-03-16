@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>funnel chart</title>
+    <style media="screen">
+      *{padding: 0; margin: 0;}
+      .div1{width: 30%; height: 400px; border: 1px solid #DDD;}
+      .div2{width: 40%; height: 400px; border: 1px solid #DDD;}
+    </style>
+    <link rel="stylesheet" href="../../css/d3.css">
+    <script type="text/javascript">
+        window.onload = function() {
+            var ops1 = {
+                data: [
+                    {'name': '红茶', 'val': 50000},
+                    {'name': '绿茶', 'val': 30000},
+                    {'name': '咖啡', 'val': 10000},
+                    {'name': '绿豆汤', 'val': 3000}
+                ]
+            };
+            var ops2 = {
+                data: [
+                    ['红茶', 50000],
+                    ['绿茶', 30000],
+                    ['咖啡', 10000],
+                    ['绿豆汤', 5000]
+                ]
+            };
+            dcharts.funnelChart('.div1', ops1);
+            dcharts.funnelChart('.div2', ops1);
+        };
+    </script>
+</head>
+<body>
+    <div class="div1"> </div>
+    <div class="div2"> </div>
+
+    <script type="text/javascript" src="../../node_modules/d3/d3.js"></script>
+    <script type="text/javascript" src="../../node_modules/crossfilter/crossfilter.js"></script>
+    <script type="text/javascript" src="../../lib/dcharts.js"></script>
+</body>
+</html>

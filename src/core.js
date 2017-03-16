@@ -128,6 +128,9 @@ dcharts.group.options = function(selector, options) {
         getTension: function() {
             return options.tension || 0.7;
         },
+        getBottomPct: function() {
+            return options.bottomPct || 1/4;
+        },
         showAxisX: function() {
             return (typeof options.showAxisX != 'undefined') ? options.showAxisX : true;
         },

@@ -15,7 +15,7 @@ dcharts.tooltip.initTooltip = function(_selector) {
 
 dcharts.tooltip.mountTooltip = function(ops, dom) {
     dom.on('mouseenter', function(d) {
-      dcharts.tooltip.showTooltip(d, ops.getSelector());
+        dcharts.tooltip.showTooltip(d, ops.getSelector());
     })
     .on('mousemove', function() {
       var arr = d3.mouse(ops.getBox()[0][0]);
@@ -28,24 +28,23 @@ dcharts.tooltip.mountTooltip = function(ops, dom) {
     });
 };
 
-dcharts.tooltip.showTooltip = function(d, _selector, html) {
+dcharts.tooltip.showTooltip = function(d, _selector) {
     var _result = (function() {
         if(d instanceof Array){
-            return d[1];
+            return (typeof d[0] == 'string') ? (d[0] + ':' + d[1]) : d[1];
         }else if(d instanceof Object) {
             return d.x + ':' + d.y;
         }else{
             return d;
         }
     })();
-    var _html = html || _result;
     var _otherTooltip = d3.select('body').selectAll('div.tooltip');
     _otherTooltip.transition().style('opacity', 0);
 
     clearTimeout(dcharts.tooltip.timer);
     _selector.select('div.tooltip')
       .style('opacity', 1)
-      .html(_html);
+      .html(_result);
 };
 
 dcharts.tooltip.moveTooltip = function(_selector, x, y) {
