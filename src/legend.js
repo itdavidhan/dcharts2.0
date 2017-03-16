@@ -1,4 +1,4 @@
 
-dcharts.legend = function() {
-
+dcharts.legend = function(selector, options, callback) {
+    
 };

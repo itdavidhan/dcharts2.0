@@ -60,6 +60,7 @@ dcharts.group.renderBubble = function(ops) {
                 .enter()
                 .append("circle")
                 .attr("class", "bubble _" + i);
+        dcharts.tooltip.mountTooltip(ops, ops._bubble);
 
         ops._bodyG.selectAll("circle._" + i)
                 .data(list)
@@ -83,8 +84,5 @@ dcharts.group.renderBubble = function(ops) {
                         return 5;
                     }
                 });
-
     });
-
-    dcharts.tooltip.mountTooltip(ops, ops._bubble);
 };

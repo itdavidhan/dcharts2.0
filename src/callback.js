@@ -1,4 +1,6 @@
-
+/*
+* callback
+*/
 dcharts.callback = function(selector, options, render, callback) {
 
     callback && callback(set);
