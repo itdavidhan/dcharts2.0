@@ -255,3 +255,29 @@ body {
     width: auto;
     height: auto;
 }
+
+.dcharts-container .legend {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    font-size: 12px;
+}
+.dcharts-container .legend-r {
+    height: 30px;
+    line-height: 30px;
+}
+.dcharts-container .legend-r em {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+.dcharts-container .legend-r span {
+    display: inline-block;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: -6px;
+}

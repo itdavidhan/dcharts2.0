@@ -20,6 +20,9 @@ dcharts.group.options = function(selector, options) {
         getBox: function() {
             return this.getSelector().select('.dcharts-container');
         },
+        getOriginalSelector: function() {
+            return selector;
+        },
         getSelWdith: function() {
             var dom = this.getSelector();
             return parseFloat(dom.style('width'));
@@ -205,6 +208,7 @@ dcharts.group.options = function(selector, options) {
         _dots: null,
         _pieG: null,
         _bubble: null,
+        _legend: null,
         _axisXb: null,
         _axisXt: null,
         _axisYl: null,
@@ -224,6 +228,7 @@ dcharts.group.renderSvg = function(ops) {
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
         dcharts.tooltip.initTooltip(ops._dchartCont);
+        dcharts.legend.init(ops);
     }
 };
 
