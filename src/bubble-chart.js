@@ -42,3 +42,49 @@ dcharts.bubbleChart = function(selector, options, callback) {
     dcharts.callback(selector, options, render, callback);
 
 };
+
+// 生成气泡图
+dcharts.group.renderBubble = function(ops) {
+    var _data = ops.getData();
+    var _rMax = ops.getRMax(_data[0]);
+    var _rMin = ops.getRMin(_data[0]);
+    var _r = d3.scale.pow().exponent(1).domain([_rMin, _rMax]).range([0, 50]); // <-B
+    var _x = ops.getX();
+    var _y = ops.getY();
+    var _color = ops.getColor();
+
+    if(ops._bubble) return;
+    _data.forEach(function (list, i) {
+        ops._bubble = ops._bodyG.selectAll("circle._" + i)
+                .data(list)
+                .enter()
+                .append("circle")
+                .attr("class", "bubble _" + i);
+
+        ops._bodyG.selectAll("circle._" + i)
+                .data(list)
+                .style("stroke", function (d, j) {
+                    return _color[j%_color.length];
+                })
+                .style("fill", function (d, j) {
+                    return _color[j%_color.length];
+                })
+                .transition()
+                .attr("cx", function (d) {
+                    return _x(d[0]);
+                })
+                .attr("cy", function (d) {
+                    return _y(d[1]);
+                })
+                .attr("r", function (d) {
+                    if(d[2]) {
+                        return _r(d[2]);
+                    }else {
+                        return 5;
+                    }
+                });
+
+    });
+
+    dcharts.tooltip.mountTooltip(ops, ops._bubble);
+};

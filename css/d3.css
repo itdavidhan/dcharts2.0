@@ -225,7 +225,7 @@ body {
 }
 
 .dcharts-container .bubble{
-    fill-opacity: .3;
+    /*fill-opacity: .3;*/
 }
 
 .dcharts-container .bar{

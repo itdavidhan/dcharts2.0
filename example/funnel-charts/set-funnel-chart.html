@@ -14,6 +14,7 @@
     <script type="text/javascript">
         window.onload = function() {
             var oBtn = document.querySelector('.btn');
+            var oBtn2 = document.querySelector('.btn2');
             var ops1 = {
                 data: [
                     {'name': '红茶', 'val': 50000},
@@ -22,19 +23,27 @@
                     {'name': '绿豆汤', 'val': 3000},
                     {'name': '雪碧', 'val': 20000},
                     {'name': '可乐', 'val': 26000}
-                ]
+                ],
+                bottomPct: 1/5
             };
             var ops2 = {
                 data: [
-                    ['红茶', 50000],
-                    ['绿茶', 30000],
-                    ['咖啡', 10000],
-                    ['绿豆汤', 5000]
-                ]
+                    {'name': '绿茶', 'val': 30000},
+                    {'name': '咖啡', 'val': 10000},
+                    {'name': '绿豆汤', 'val': 3000},
+                    {'name': '雪碧', 'val': 20000},
+                    {'name': '可乐', 'val': 26000}
+                ],
+                bottomPct: 1/5
             };
             dcharts.funnelChart('.div1', ops1, function(set) {
                 oBtn.onclick = function() {
                     set('color', ['red', 'orange', 'yellow', 'green']);
+                };
+                oBtn2.onclick = function() {
+                    set({
+                        'data': ops2.data
+                    });
                 };
             });
             dcharts.funnelChart('.div2', ops1);
@@ -47,6 +56,7 @@
 </head>
 <body>
     <a href="#" class="btn">change color</a>
+    <a href="#" class="btn2">change data</a>
     <div class="div1"> </div>
     <div class="div2"> </div>
 

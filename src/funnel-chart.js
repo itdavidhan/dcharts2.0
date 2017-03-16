@@ -94,7 +94,7 @@ dcharts.funnelChart = function(selector, options, callback) {
   };
 
   window.FunnelChart.prototype.draw = function(elem, callback){
-    var DEFAULT_SPEED = 10;
+    var DEFAULT_SPEED = 6;
     var speed = DEFAULT_SPEED;
 
     var selector = d3.select(elem);
