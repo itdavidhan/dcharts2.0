@@ -18,6 +18,7 @@ dcharts.funnelChart = function(selector, options, callback) {
         var ops = dcharts.group.options(selector, options);
         var data = ops.getData()[0];
         var chart = new FunnelChart({
+                        ops: ops,
         				data: data,
         				width: ops.getWidth(),
         				height: ops.getHeight(),
@@ -25,11 +26,12 @@ dcharts.funnelChart = function(selector, options, callback) {
                         color: ops.getColor()
         			});
 
-        chart.draw(selector, handlePath);
+        chart.draw(selector, ops, handlePath);
 
         function handlePath() {
             var _path = d3.select(selector).selectAll('.trapezoid-path');
             dcharts.tooltip.mountTooltip(ops, _path);
+            dcharts.legend.init(ops);
         }
     }
 };
@@ -37,18 +39,21 @@ dcharts.funnelChart = function(selector, options, callback) {
 (function(){
   var DEFAULT_HEIGHT = 400,
       DEFAULT_WIDTH = 600,
+      DEFAULT_MARGIN = {left: 30, top: 30, right: 160, bottom: 30},
       DEFAULT_BOTTOM_PERCENT = 1/3;
 
   window.FunnelChart = function(options) {
+    this.ops = options.ops;
     this.data = options.data;
     this.color = options.color;
+    this.margin = options.margin || DEFAULT_MARGIN;
     this.totalEngagement = 0;
     for(var i = 0; i < this.data.length; i++){
       this.totalEngagement += this.data[i][1];
     }
-    this.width = typeof options.width !== 'undefined' ? options.width : DEFAULT_WIDTH;
-    this.height = typeof options.height !== 'undefined' ? options.height : DEFAULT_HEIGHT;
-    var bottomPct = typeof options.bottomPct !== 'undefined' ? options.bottomPct : DEFAULT_BOTTOM_PERCENT;
+    this.width = this.ops.quadrantWidth();
+    this.height = this.ops.quadrantHeight();
+    var bottomPct = this.ops.getBottomPct();
     this._slope = 2*this.height/(this.width - bottomPct*this.width);
     this._totalArea = (this.width+bottomPct*this.width)*this.height/2;
   };
@@ -93,7 +98,7 @@ dcharts.funnelChart = function(selector, options, callback) {
     return trapezoids;
   };
 
-  window.FunnelChart.prototype.draw = function(elem, callback){
+  window.FunnelChart.prototype.draw = function(elem, ops, callback){
     var DEFAULT_SPEED = 6;
     var speed = DEFAULT_SPEED;
 
@@ -102,9 +107,13 @@ dcharts.funnelChart = function(selector, options, callback) {
               .append('div')
               .attr('class', 'dcharts-container')
               .append('svg:svg')
-              .attr('width', this.width)
-              .attr('height', this.height)
-              .append('svg:g');
+              .attr('width', ops.getWidth())
+              .attr('height', ops.getHeight());
+    var bodyG = funnelSvg.append('svg:g')
+                .attr('class', 'body')
+                .attr('transform', 'translate('
+                + ops.xStart()+','
+                + ops.yEnd()+')');
 
     // Creates the correct d3 line for the funnel
     var funnelPath = d3.svg.line()
@@ -120,7 +129,7 @@ dcharts.funnelChart = function(selector, options, callback) {
     dcharts.tooltip.initTooltip(_dchartCont);
 
     function drawTrapezoids(funnel, i){
-      var trapezoid = funnelSvg
+      var trapezoid = bodyG
                       .append('svg:path')
                       .attr('class', 'trapezoid-path')
                       .attr('d', function(d){
@@ -144,9 +153,9 @@ dcharts.funnelChart = function(selector, options, callback) {
       funnelSvg
       .append('svg:text')
       .text(funnel._getLabel(i) + ': ' + funnel._getEngagementCount(i))
-      .attr("x", function(d){ return funnel.width/2; })
+      .attr("x", function(d){ return ops.quadrantWidth()/2 + ops.xStart(); })
       .attr("y", function(d){
-        return (paths[i][0][1] + paths[i][1][1])/2;}) // Average height of bases
+        return (paths[i][0][1] + paths[i][1][1])/2 + ops.getMargin().top;}) // Average height of bases
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .attr("fill", "#fff");

@@ -22,7 +22,7 @@ dcharts.legend.create = function(ops) {
 
     for(var i=0; i<_data.length; i++)
     {   var _name = _data[i][0];
-        _html += '<div class="legend-r legend-rect-'+i+'"><em></em><span>'+_name+'</span></div>';
+        _html += '<div class="legend-r legend-rect-'+i+'"><em></em><span title="'+_name+'">'+_name+'</span></div>';
     }
     ops._legend.innerHTML = _html;
 

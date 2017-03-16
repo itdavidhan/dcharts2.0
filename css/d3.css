@@ -146,7 +146,7 @@ body {
 .dcharts-container .x-axis line,
 .dcharts-container .y-axis line {
     fill: none;
-    stroke: #000;
+    stroke: #DDD;
     shape-rendering: crispEdges;
 }
 
@@ -157,9 +157,9 @@ body {
 
 .dcharts-container .x-axis .grid-line,
 .dcharts-container .y-axis .grid-line{
-    stroke: black;
+    stroke: #EEE;
     shape-rendering: crispEdges;
-    stroke-opacity: .2;
+    /*stroke-opacity: .2;*/
 }
 
 .dcharts-container .x-axis .line,
