@@ -35,6 +35,7 @@ dcharts.stackChart = function(selector, options, callback) {
         dcharts.group.defineBodyClip(ops);
         // 生成堆叠柱状图
         dcharts.group.renderStackBar(ops);
+        // dcharts.group.renderStackBar(ops);
     }
 
     render(selector, options);
@@ -44,12 +45,14 @@ dcharts.stackChart = function(selector, options, callback) {
 
 dcharts.group.renderStackBar = function(ops) {
     var _data = ops.getOriginalData();
+    _data = handleData(_data);
     var _stack = d3.layout.stack()(_data);
     var _x = d3.scale.ordinal()
         .domain(_data[0].map(function(d) {
             return d.x;
         }))
-        .rangePoints([0, ops.quadrantWidth()], 1);
+        .rangeRoundBands([0, ops.quadrantWidth()], 1, 0.6);
+        // .rangePoints([0, ops.quadrantWidth()], 1);
     var _y = d3.scale.linear()
         .range([0, ops.quadrantHeight()])
         .domain([0, d3.max(_stack[_stack.length - 1], function(d) { return d.y0 + d.y; })]);
@@ -70,6 +73,20 @@ dcharts.group.renderStackBar = function(ops) {
         .data(function(d) {return d;})
         .enter()
         .append('rect');
+
+    function handleData(data) {
+        if(data[0] && data[0] instanceof Array) {
+            return data;
+        }else if(data[0] && data[0] instanceof Object) {
+            var _a = [];
+            for(var i=0; i<data.length; i++) {
+                _a.push(data[i].children);
+            }
+            return _a;
+        }else {
+            return [[]];
+        }
+    }
 
     _rects.attr("x", function(d) {return _x(d.x) - (_w)/2; })
     .attr("y", ops.quadrantHeight())

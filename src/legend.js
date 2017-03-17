@@ -12,7 +12,19 @@ dcharts.legend.init = function(ops) {
 };
 
 dcharts.legend.create = function(ops) {
-    var _data = ops.getData()[0];
+    var _data = ops.getData();
+    if(_data[0][0][2]) {
+        _data = (function() {
+            var _a = [];
+            for(var i=0; i<_data.length; i++) {
+                _a.push(_data[i][0][2]);
+            }
+            return _a;
+        })();
+
+    }else {
+        _data = ops.getData()[0];
+    }
     var _html = '';
     var _rect = null;
     var _color = ops.getColor();
@@ -20,8 +32,8 @@ dcharts.legend.create = function(ops) {
 
     if(!isNaN(Number(_key))) return;
 
-    for(var i=0; i<_data.length; i++)
-    {   var _name = _data[i][0];
+    for(var i=0; i<_data.length; i++) {
+        var _name = (_data[i] instanceof Object) ? _data[i][0] : _data[i];
         _html += '<div class="legend-r legend-rect-'+i+'"><em></em><span title="'+_name+'">'+_name+'</span></div>';
     }
     ops._legend.innerHTML = _html;

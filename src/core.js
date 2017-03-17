@@ -113,7 +113,8 @@ dcharts.group.options = function(selector, options) {
                 return d3.scale.ordinal()
                 .domain(data.map(function(d) {
                     return d[0];
-                })).rangePoints([0, this.quadrantWidth()], 1);
+                })).rangeRoundBands([0, this.quadrantWidth()], 1, 0.6);
+                // })).rangePoints([0, this.quadrantWidth()], 1);
             }
         },
         getY: function() {

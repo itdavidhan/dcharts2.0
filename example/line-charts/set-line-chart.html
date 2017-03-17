@@ -15,13 +15,48 @@
   </style>
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
-    window.onload = function() {var oBtn1 = document.querySelector('.change1');
-    var oBtn2 = document.querySelector('.change2');
-    var oBtn3 = document.querySelector('.change3');
-    var oBtn4 = document.querySelector('.change4');
-    var oBtn5 = document.querySelector('.change5');
+    window.onload = function() {
+      var oBtn1 = document.querySelector('.change1');
+      var oBtn2 = document.querySelector('.change2');
+      var oBtn3 = document.querySelector('.change3');
+      var oBtn4 = document.querySelector('.change4');
+      var oBtn5 = document.querySelector('.change5');
 
       var ops1 = {
+        scale: 'linear',
+        data: [
+          [
+            {key: 0, value: 13},
+            {key: 1, value: 12},
+            {key: 2, value: 14},
+            {key: 3, value: 22},
+            {key: 4, value: 6}
+          ],
+          [
+            {key: 0, value: 16},
+            {key: 1, value: 13},
+            {key: 2, value: 55},
+            {key: 3, value: 16},
+            {key: 4, value: 8}
+          ],
+          [
+            {key: 0, value: 22},
+            {key: 1, value: 13},
+            {key: 2, value: 30},
+            {key: 3, value: 20},
+            {key: 4, value: 10}
+          ]
+        ],
+        margin: {top: 20, right: 20, bottom: 20, left: 100},
+        ticks: 5,
+        // showLineX: false,
+        showLineY: true,
+        showDot: true,
+        tension: 0.5,
+        // color: ['yellow', 'red', 'orange', 'blue', 'green']
+      };
+
+      var ops2 = {
         scale: 'linear',
         data: [
           [
@@ -58,7 +93,22 @@
 
       dcharts.lineChart('.div1', ops1, function(set) {
           oBtn1.onclick = function() {
-              set('color', ['#DDD', '#AAA', '#SSS', '#TTT']);
+              set('color', ['red', 'green', 'blue']);
+          };
+          oBtn2.onclick = function() {
+              set({
+                  'width': 300,
+                  'height': 200
+              });
+          };
+          oBtn3.onclick = function() {
+              set('height', '400px');
+          };
+          oBtn4.onclick = function() {
+              set('ticks', '10');
+          };
+          oBtn5.onclick = function() {
+              dcharts.lineChart('.div1', ops2);
           };
       });
 

@@ -37,6 +37,22 @@
             axisTextY: '数量'
             // color: ['yellow', 'red', 'orange', 'blue', 'green']
         };
+        var ops2 = {
+            scale: 'linear',
+            data: [1, 4, 12, 22, 10, 3, 6, 6, 2],
+            margin: {top: 30, right: 30, bottom: 60, left: 60},
+            ticks: '5',
+            showLineX: false,
+            showLineY: true,
+            formatX: '%',
+            // formatY: '$',
+            // showAxisX: false,
+            // showAxisY: false,
+            showText: true,
+            // axisTextX: '月份',
+            axisTextY: '数量'
+            // color: ['yellow', 'red', 'orange', 'blue', 'green']
+        };
 
         dcharts.barChart('.div1', ops1, function(set) {
             oBtn1.onclick = function() {
@@ -52,11 +68,15 @@
             };
 
             oBtn3.onclick = function() {
-                set('height', 200);
+                set('height', 300);
             };
 
             oBtn4.onclick = function() {
                 set('ticks', 10);
+            };
+
+            oBtn5.onclick = function() {
+                dcharts.barChart('.div1', ops2);
             };
         });
 
