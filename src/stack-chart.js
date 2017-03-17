@@ -35,7 +35,6 @@ dcharts.stackChart = function(selector, options, callback) {
         dcharts.group.defineBodyClip(ops);
         // 生成堆叠柱状图
         dcharts.group.renderStackBar(ops);
-        // dcharts.group.renderStackBar(ops);
     }
 
     render(selector, options);
