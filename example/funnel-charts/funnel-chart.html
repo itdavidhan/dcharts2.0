@@ -20,6 +20,7 @@
                     {'name': '咖啡', 'val': 10000},
                     {'name': '绿豆汤', 'val': 3000}
                 ],
+                showText: false,
                 margin: {left: 30, top: 30, right: 100, bottom: 30}
             };
             var ops2 = {
@@ -28,10 +29,12 @@
                     ['绿茶', 30000],
                     ['咖啡', 10000],
                     ['绿豆汤', 5000]
-                ]
+                ],
+                showText: true,
+                margin: {left: 30, top: 30, right: 100, bottom: 30}
             };
             dcharts.funnelChart('.div1', ops1);
-            dcharts.funnelChart('.div2', ops1);
+            dcharts.funnelChart('.div2', ops2);
         };
     </script>
 </head>

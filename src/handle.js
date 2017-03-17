@@ -23,6 +23,8 @@ dcharts.handle.data = function(data) {
                   data.push(_a);
                 });
                 return data;
+            }else if(typeof initData[0][0] == 'string') {
+                return [initData];
             }else{
                 console.error('数据格式错误');
                 return [[]];

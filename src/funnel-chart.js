@@ -6,6 +6,7 @@
 * width: <number> example: 400
 * height: <number> example: 400
 * bottomPct: <number> example: 1/4
+* showText: <boolean> example: false
 */
 dcharts.funnelChart = function(selector, options, callback) {
 
@@ -32,6 +33,12 @@ dcharts.funnelChart = function(selector, options, callback) {
             var _path = d3.select(selector).selectAll('.trapezoid-path');
             dcharts.tooltip.mountTooltip(ops, _path);
             dcharts.legend.init(ops);
+            _path.on('mouseenter.handlePath', function() {
+                d3.select(this).transition().style('opacity', '0.8');
+            })
+            .on('mouseleave.handlePath', function() {
+                d3.select(this).transition().style('opacity', '1');
+            });
         }
     }
 };
@@ -122,9 +129,7 @@ dcharts.funnelChart = function(selector, options, callback) {
 
     // Automatically generates colors for each trapezoid in funnel
     var colorScale = this.color;
-
     var paths = this._createPaths();
-
     var _dchartCont = selector.select('.dcharts-container');
     dcharts.tooltip.initTooltip(_dchartCont);
 
@@ -150,15 +155,18 @@ dcharts.funnelChart = function(selector, options, callback) {
                         .attr("d", function(d){return funnelPath(paths[i]);})
                         .attr("fill", function(d){return colorScale[i%colorScale.length];});
 
-      funnelSvg
-      .append('svg:text')
-      .text(funnel._getLabel(i) + ': ' + funnel._getEngagementCount(i))
-      .attr("x", function(d){ return ops.quadrantWidth()/2 + ops.xStart(); })
-      .attr("y", function(d){
-        return (paths[i][0][1] + paths[i][1][1])/2 + ops.getMargin().top;}) // Average height of bases
-      .attr("text-anchor", "middle")
-      .attr("dominant-baseline", "middle")
-      .attr("fill", "#fff");
+      if(ops.showText()) showText();
+      function showText() {
+          funnelSvg.append('svg:text')
+          .text(funnel._getLabel(i) + ': ' + funnel._getEngagementCount(i))
+          .attr("x", function(d){ return ops.quadrantWidth()/2 + ops.xStart(); })
+          .attr("y", function(d){
+            return (paths[i][0][1] + paths[i][1][1])/2 + ops.getMargin().top;}) // Average height of bases
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "middle")
+          .attr("fill", "#fff");
+      }
+
 
       if(i < paths.length - 1){
         transition.each('end', function(){

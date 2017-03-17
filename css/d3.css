@@ -269,8 +269,8 @@ body {
 .dcharts-container .legend-r em {
     display: inline-block;
     width: 20px;
-    height: 20px;
-    border-radius: 4px;
+    height: 12px;
+    border-radius: 2px;
     margin-right: 5px;
 }
 .dcharts-container .legend-r span {
@@ -279,5 +279,5 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    vertical-align: -6px;
+    vertical-align: -9px;
 }
