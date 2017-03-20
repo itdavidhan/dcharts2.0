@@ -14,40 +14,35 @@
     <script type="text/javascript">
         window.onload = function() {
             var oBtn1 = document.querySelector('.change1');
+            var oBtn2 = document.querySelector('.change2');
+            var oBtn3 = document.querySelector('.change3');
+            var oBtn4 = document.querySelector('.change4');
             var ops = {
                 scale: 'linear',
                 data: [
                     [
-                        {'x': 0, 'y': 5},
-                        {'x': 1, 'y': 7},
-                        {'x': 2, 'y': 2},
-                        {'x': 3, 'y': 6},
-                        {'x': 4, 'y': 3},
-                        {'x': 5, 'y': 5},
-                        {'x': 6, 'y': 2},
-                        {'x': 7, 'y': 6},
-                        {'x': 8, 'y': 8},
-                        {'x': 9, 'y': 3}
+                        {'x': 0, 'y': 5, 'x0': 'a'},
+                        {'x': 1, 'y': 7, 'x0': 'a'},
+                        {'x': 2, 'y': 2, 'x0': 'a'},
+                        {'x': 3, 'y': 6, 'x0': 'a'},
+                        {'x': 4, 'y': 3, 'x0': 'a'},
+                        {'x': 5, 'y': 5, 'x0': 'a'}
                     ],
                     [
-                        {'x': 0, 'y': 15},
-                        {'x': 1, 'y': 7},
-                        {'x': 2, 'y': 12},
-                        {'x': 3, 'y': 6},
-                        {'x': 4, 'y': 13},
-                        {'x': 5, 'y': 15},
-                        {'x': 6, 'y': 3},
-                        {'x': 7, 'y': 4},
-                        {'x': 8, 'y': 8},
-                        {'x': 9, 'y': 7}
+                        {'x': 0, 'y': 15, 'x0': 'b'},
+                        {'x': 1, 'y': 7, 'x0': 'b'},
+                        {'x': 2, 'y': 12, 'x0': 'b'},
+                        {'x': 3, 'y': 6, 'x0': 'b'},
+                        {'x': 4, 'y': 13, 'x0': 'b'},
+                        {'x': 5, 'y': 15, 'x0': 'b'}
                     ],
                     [
-                        {'x': 0, 'y': 66},
-                        {'x': 1, 'y': 3},
-                        {'x': 2, 'y': 54},
-                        {'x': 3, 'y': 34},
-                        {'x': 4, 'y': 54},
-                        {'x': 5, 'y': 7}
+                        {'x': 0, 'y': 66, 'x0': 'c'},
+                        {'x': 1, 'y': 3, 'x0': 'c'},
+                        {'x': 2, 'y': 54, 'x0': 'c'},
+                        {'x': 3, 'y': 34, 'x0': 'c'},
+                        {'x': 4, 'y': 54, 'x0': 'c'},
+                        {'x': 5, 'y': 7, 'x0': 'c'}
                     ]
                 ],
                 margin: {top: 80, right: 80, bottom: 80, left: 80},
@@ -66,8 +61,16 @@
                 };
             });
 
-            window.onresize = function() {
-                dcharts.areaChart('.div1', ops);
+            oBtn2.onclick = function() {
+                dcharts.stackChart('.div1', ops);
+            };
+
+            oBtn3.onclick = function() {
+                dcharts.barChart('.div1', ops);
+            };
+
+            oBtn4.onclick = function() {
+                dcharts.lineChart('.div1', ops);
             };
         };
     </script>
@@ -75,6 +78,9 @@
 <body>
     <div class="btn-cont">
         <a class="change1" href="javascript:;">改变color</a>
+        <a class="change2" href="javascript:;">堆叠图</a>
+        <a class="change3" href="javascript:;">柱状图</a>
+        <a class="change4" href="javascript:;">线图</a>
         <!-- <a class="change2" href="javascript:;">改变width和height</a>
         <a class="change3" href="javascript:;">改变height</a>
         <a class="change4" href="javascript:;">改变刻度ticks</a>

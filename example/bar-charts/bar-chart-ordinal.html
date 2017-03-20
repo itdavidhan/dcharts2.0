@@ -13,12 +13,19 @@
   <link rel="stylesheet" href="../../css/d3.css">
   <script type="text/javascript">
     window.onload = function() {
+        var oBtn1 = document.querySelector('.btn1');
+        var oBtn2 = document.querySelector('.btn2');
+        var oBtn3 = document.querySelector('.btn3');
+        var oBtn4 = document.querySelector('.btn4');
+        var oBtn5 = document.querySelector('.btn5');
+        var oBtn6 = document.querySelector('.btn6');
+        var oBtn7 = document.querySelector('.btn7');
       var ops = {
         scale: 'ordinal',
         data: [
           {'key': '狮子', 'value': 4},
           {'key': '老虎', 'value': 6},
-          {'key': '长颈鹿顶顶顶顶顶顶顶顶顶', 'value': 12},
+          {'key': '长颈鹿', 'value': 12},
           {'key': '猎豹', 'value': 8},
           {'key': '山羊', 'value': 8},
           {'key': '狗', 'value': 3}
@@ -35,15 +42,48 @@
       }
 
       dcharts.barChart('.div1', ops);
-      dcharts.barChart('.div2', ops, function(set) {
+      dcharts.barChart('.div2', ops, function(set) {});
 
-      });
+      oBtn1.onclick = function() {
+          dcharts.barChart('.div1', ops);
+      };
+
+      oBtn2.onclick = function() {
+          dcharts.lineChart('.div1', ops);
+      };
+
+      oBtn3.onclick = function() {
+          dcharts.pieChart('.div1', ops);
+      };
+
+      oBtn4.onclick = function() {
+          dcharts.areaChart('.div1', ops);
+      };
+
+      oBtn5.onclick = function() {
+          dcharts.bubbleChart('.div1', ops);
+      };
+
+      oBtn6.onclick = function() {
+          dcharts.funnelChart('.div1', ops);
+      };
+
+      oBtn7.onclick = function() {
+          dcharts.crossBarChart('.div1', ops);
+      };
     };
   </script>
 </head>
 <body>
-  <div class="div1"></div>
-  <div class="div2"></div>
+    <a href="#" class="btn1">柱状图</a>
+    <a href="#" class="btn2">线图</a>
+    <a href="#" class="btn3">饼图</a>
+    <a href="#" class="btn4">面积图</a>
+    <a href="#" class="btn5">气泡图</a>
+    <a href="#" class="btn6">漏斗图</a>
+    <a href="#" class="btn7">横向柱状图</a>
+    <div class="div1"></div>
+    <div class="div2"></div>
 
 
 
