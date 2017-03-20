@@ -49,24 +49,8 @@
             // color: ['yellow', 'red', 'orange', 'blue', 'green']
         };
 
-        dcharts.barChart('.div1', ops1, function(render) {
-            oBtn1.onclick = function() {
-                ops1.color = ['red', 'orange', 'yellow', 'green', 'blue'];
-                ops1.width = 300;
-                render('.div1', ops1);
-            };
-        });
-        dcharts.barChart('.div2', ops1);
-
-        // oBtn1.onclick = function() {
-        //     ops1.color = ['yellow', 'red', 'orange', 'blue', 'green'];
-        //     dcharts.barChart('.div1', ops1);
-        // };
-
-        oBtn2.onclick = function() {
-            // ops2.color = ['yellow', 'red', 'orange', 'blue', 'green'];
-            dcharts.barChart('.div2', ops2);
-        };
+        dcharts.barChart('.div1', ops1);
+        dcharts.barChart('.div2', ops2);
 
     //   window.onresize = function() {
     //       dcharts.barChart('.div1', ops1);
