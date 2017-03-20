@@ -229,7 +229,7 @@ dcharts.group.renderSvg = function(ops) {
         .attr('class', 'dcharts-container')
         .style('width', ops.getWidth() + 'px')
         .style('height', ops.getHeight() + 'px');
-        
+
         ops._svg = ops._dchartCont.append("svg");
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
@@ -517,6 +517,8 @@ dcharts.group.renderDots = function(ops) {
 // 生成条/柱
 dcharts.group.renderBar = function(ops) {
     var data = ops.getData()[0];
+    var data = ops.getOriginalData();
+    // console.log(data);
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
@@ -548,12 +550,15 @@ dcharts.group.renderBar = function(ops) {
                   }
                 })
                 .attr("x", function (d) {
+                    var d = dcharts.utils.json2arr(d);
                     return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
                 })
                 .attr("y", function (d) {
+                    var d = dcharts.utils.json2arr(d);
                     return _y(d[1]);
                 })
                 .attr("height", function (d) {
+                    var d = dcharts.utils.json2arr(d);
                     return ops.yStart() - _y(d[1]);
                 })
                 .attr("width", function(d){

@@ -16,7 +16,7 @@ dcharts.tooltip.initTooltip = function(_selector) {
 dcharts.tooltip.mountTooltip = function(ops, dom) {
     dom.on('mouseenter.tooltip', function(d, i) {
         var _d = d || ops.getData()[0][i];
-        dcharts.tooltip.showTooltip(_d, ops.getSelector());
+        dcharts.tooltip.showTooltip(_d, ops.getSelector(), ops, i);
     })
     .on('mousemove.tooltip', function() {
       var arr = d3.mouse(ops.getBox()[0][0]);
@@ -29,16 +29,23 @@ dcharts.tooltip.mountTooltip = function(ops, dom) {
     });
 };
 
-dcharts.tooltip.showTooltip = function(d, _selector) {
-    var _result = (function() {
-        if(d instanceof Array){
-            return (typeof d[0] == 'string') ? (d[0] + ':' + d[1]) : d[1];
-        }else if(d instanceof Object) {
-            return (d.x !== 'undefined') ? (d.x + ':' + d.y) : (d.data[0] + ':' + d.data[1]);
-        }else{
-            return d;
-        }
-    })();
+dcharts.tooltip.showTooltip = function(d, _selector, ops, index) {
+    var _color = ops.getColor();
+    var _result = '';
+    for(var i in d) {
+        var p = '<p style="color: '+_color[index]+'"><b>'+i+'</b>'+'：'+'<span>'+d[i]+'</span></p>';
+        _result += p;
+    }
+
+    // var _result = (function() {
+    //     if(d instanceof Array){
+    //         return (typeof d[0] == 'string') ? (d[0] + ':' + d[1]) : d[1];
+    //     }else if(d instanceof Object) {
+    //         return (d.x !== 'undefined') ? (d.x + ':' + d.y) : (d.data[0] + ':' + d.data[1]);
+    //     }else{
+    //         return d;
+    //     }
+    // })();
     var _otherTooltip = d3.select('body').selectAll('div.tooltip');
     _otherTooltip.transition().style('opacity', 0);
 

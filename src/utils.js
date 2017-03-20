@@ -17,3 +17,11 @@ dcharts.utils.dfc.json2arr = function(arr) {
     });
     return _main;
 };
+
+dcharts.utils.json2arr = function(json) {
+    var _arr = [];
+    for(var i in json) {
+        _arr.push(json[i]);
+    }
+    return _arr;
+};

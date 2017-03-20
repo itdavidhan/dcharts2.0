@@ -242,6 +242,11 @@ body {
   box-shadow: rgb(163, 163, 164) 0px 0px 20px -3px;
 }
 
+.dcharts-container .tooltip p {
+    line-height: 20px;
+    font-size: 12px;
+}
+
 .dcharts-container .ring {
   fill: none;
   stroke: #c7141a;
