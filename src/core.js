@@ -224,7 +224,12 @@ dcharts.group.options = function(selector, options) {
 dcharts.group.renderSvg = function(ops) {
     if(!ops._dchartCont) {
         var selector = ops.getSelector();
-        ops._dchartCont = selector.html('').append('div').attr('class', 'dcharts-container');
+        ops._dchartCont = selector.html('')
+        .append('div')
+        .attr('class', 'dcharts-container')
+        .style('width', ops.getWidth() + 'px')
+        .style('height', ops.getHeight() + 'px');
+        
         ops._svg = ops._dchartCont.append("svg");
         ops._svg.attr("height", ops.getHeight())
             .attr("width", ops.getWidth());
