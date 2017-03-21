@@ -12,7 +12,7 @@ dcharts.filter.maxInArrs = function(arr) {
     arr.map(function(a) {
         _keyArr.push(a[0]);
         _valArr.push(a[1]);
-        _rArr.push(a[2]);
+        _rArr.push(parseFloat(a[2]));
     });
     _keyMax = d3.max(_keyArr, function(a) {
         return +a;
@@ -37,7 +37,7 @@ dcharts.filter.minInArrs = function(arr) {
     arr.map(function(a) {
         _keyArr.push(a[0]);
         _valArr.push(a[1]);
-        _rArr.push(a[2]);
+        _rArr.push(parseFloat(a[2]));
     });
     _keyMin = d3.min(_keyArr, function(a) {
         return +a;

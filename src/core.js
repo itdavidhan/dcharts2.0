@@ -489,6 +489,7 @@ dcharts.group.renderDots = function(ops) {
 
     if(ops._dots) return;
     data.forEach(function (list, i) {
+       var index = i;
        ops._dots = ops._bodyG.selectAll("circle._" + i)
                .data(list)
                .enter()
@@ -510,15 +511,13 @@ dcharts.group.renderDots = function(ops) {
                .attr("cy", function (d) { return _y(d[1]); })
                .attr("r", 4.5);
 
-       dcharts.tooltip.mountTooltip(ops, ops._dots);
+       dcharts.tooltip.mountTooltip(ops, ops._dots, index);
     });
 };
 
 // 生成条/柱
 dcharts.group.renderBar = function(ops) {
     var data = ops.getData()[0];
-    var data = ops.getOriginalData();
-    // console.log(data);
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
@@ -550,15 +549,12 @@ dcharts.group.renderBar = function(ops) {
                   }
                 })
                 .attr("x", function (d) {
-                    var d = dcharts.utils.json2arr(d);
                     return _x(d[0]) - (Math.floor(ops.quadrantWidth() / data.length) - padding)/2;
                 })
                 .attr("y", function (d) {
-                    var d = dcharts.utils.json2arr(d);
                     return _y(d[1]);
                 })
                 .attr("height", function (d) {
-                    var d = dcharts.utils.json2arr(d);
                     return ops.yStart() - _y(d[1]);
                 })
                 .attr("width", function(d){

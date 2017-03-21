@@ -46,24 +46,62 @@ dcharts.bubbleChart = function(selector, options, callback) {
 // 生成气泡图
 dcharts.group.renderBubble = function(ops) {
     var _data = ops.getData();
+    var _oData = ops.getOriginalData();
     var _rMax = ops.getRMax(_data[0]);
     var _rMin = ops.getRMin(_data[0]);
-    var _r = d3.scale.pow().exponent(1).domain([_rMin, _rMax]).range([0, 50]); // <-B
+    console.log(_rMin, _rMax);
+    var _r = d3.scale.pow().exponent(1).domain([_rMin, _rMax]).range([0, 50]);
     var _x = ops.getX();
     var _y = ops.getY();
     var _color = ops.getColor();
 
     if(ops._bubble) return;
-    _data.forEach(function (list, i) {
-        ops._bubble = ops._bodyG.selectAll("circle._" + i)
-                .data(list)
+    if(_oData[0] instanceof Array) {
+        _oData.forEach(function (list, i) {
+            var index = i;
+            ops._bubble = ops._bodyG.selectAll("circle._" + i)
+                    .data(list)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "bubble _" + i);
+            dcharts.tooltip.mountTooltip(ops, ops._bubble, index);
+
+            ops._bodyG.selectAll("circle._" + i)
+                    .data(list)
+                    .style("stroke", function (d, j) {
+                        return _color[i%_color.length];
+                    })
+                    .style("fill", function (d, j) {
+                        return _color[i%_color.length];
+                    })
+                    .transition()
+                    .attr("cx", function (d) {
+                        var d = dcharts.utils.json2arr(d);
+                        return _x(d[0]);
+                    })
+                    .attr("cy", function (d) {
+                        var d = dcharts.utils.json2arr(d);
+                        return _y(d[1]);
+                    })
+                    .attr("r", function (d) {
+                        var d = dcharts.utils.json2arr(d);
+                        if(d[2]) {
+                            return _r(d[2]);
+                        }else {
+                            return 5;
+                        }
+                    });
+        });
+    } else {
+        ops._bubble = ops._bodyG.selectAll("circle._")
+                .data(_oData)
                 .enter()
                 .append("circle")
-                .attr("class", "bubble _" + i);
+                .attr("class", "bubble _");
         dcharts.tooltip.mountTooltip(ops, ops._bubble);
 
-        ops._bodyG.selectAll("circle._" + i)
-                .data(list)
+        ops._bodyG.selectAll("circle._")
+                .data(_oData)
                 .style("stroke", function (d, j) {
                     return _color[j%_color.length];
                 })
@@ -72,17 +110,22 @@ dcharts.group.renderBubble = function(ops) {
                 })
                 .transition()
                 .attr("cx", function (d) {
+                    var d = dcharts.utils.json2arr(d);
                     return _x(d[0]);
                 })
                 .attr("cy", function (d) {
+                    var d = dcharts.utils.json2arr(d);
                     return _y(d[1]);
                 })
                 .attr("r", function (d) {
-                    if(d[2]) {
-                        return _r(d[2]);
+                    var d = dcharts.utils.json2arr(d);
+                    var _n = parseFloat(d[2]);
+                    if(d[2] && _r(_n)) {
+                        return _r(_n);
                     }else {
                         return 5;
                     }
                 });
-    });
+    }
+
 };

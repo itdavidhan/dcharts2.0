@@ -132,7 +132,7 @@ dcharts.crossBarChart = function(selector, options, callback) {
                 })
                 .attr("text-anchor", "middle")
                 .text(function(d) {
-                  return d instanceof Array ? d[1] : d;
+                    return d instanceof Array ? d[1] : d;
                 });
         }
 
